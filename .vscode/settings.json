@@ -1,0 +1,5 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "workbench.editor.wrapTabs": false,
+    "editor.guides.indentation": true
+}
