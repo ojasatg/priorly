@@ -3,5 +3,6 @@
     "trailingComma": "all",
     "tabWidth": 4,
     "useTabs": false,
-    "singleQuote": false
+    "singleQuote": false,
+    "plugins": ["eslint-plugin-prettier"]
 }

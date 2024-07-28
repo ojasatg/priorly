@@ -1,5 +1,8 @@
 {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "workbench.editor.wrapTabs": false,
-    "editor.guides.indentation": true
+    "editor.guides.indentation": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "prettier.tabWidth": 4
 }
