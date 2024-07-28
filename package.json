@@ -1,6 +1,6 @@
 {
     "name": "priorly",
-    "module": "index.ts",
+    "private": true,
     "type": "module",
     "scripts": {
         "format": "prettier --write ."
@@ -11,5 +11,8 @@
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
-    }
+    },
+    "workspaces": [
+        "packages/*"
+    ]
 }
