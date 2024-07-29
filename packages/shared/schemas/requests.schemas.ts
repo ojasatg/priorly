@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TODO_PRIORITY } from "../constants/todos.consts";
 
 export const CreateTodoRequestSchema = z.object({
     title: z
@@ -7,4 +8,24 @@ export const CreateTodoRequestSchema = z.object({
         .max(60, "Title cannnot be more than 60 characters"),
 });
 
+export const EditTodoRequestSchema = CreateTodoRequestSchema.merge(
+    z.object({
+        description: z
+            .string()
+            .max(300, "Description cannot be more than 300 characters")
+            .nullish(),
+
+        priority: z.nativeEnum(TODO_PRIORITY).nullish(),
+
+        isImportant: z.boolean().nullish(),
+        isUrgent: z.boolean().nullish(),
+        isDone: z.boolean().nullish(),
+        isDeleted: z.boolean().nullish(),
+
+        deadline: z.number().nullish(),
+        reminder: z.number().nullish(),
+    }),
+);
+
 export type TCreateTodoRequestSchema = z.infer<typeof CreateTodoRequestSchema>;
+export type TEditTodoRequestSchema = z.infer<typeof EditTodoRequestSchema>;
