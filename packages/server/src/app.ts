@@ -1,9 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 
+import router from "./routes/router";
+
 const app = express();
 
 app.use(express.json());
+app.use(router);
 
 const PORT = process.env.PORT || 3010;
 const MONGO_URI = String(process.env.MONGO_URI);
