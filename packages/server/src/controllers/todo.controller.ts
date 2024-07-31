@@ -128,7 +128,7 @@ async function all(req: Request, res: Response) {
             message: "Todos fetched successfully",
             data: {
                 todos: todos,
-                cursor: todos.length || -1,
+                cursor: todos.length ? cursor + todos.length : -1,
             },
         });
     } catch (error) {
@@ -168,7 +168,7 @@ async function edit(req: Request, res: Response) {
     } catch (error) {
         res.status(EServerResponseCodes.BAD_REQUEST).json({
             rescode: EServerResponseRescodes.ERROR,
-            message: "Unable to update todos",
+            message: "Unable to update the todo",
             error: "Bad request: Changes contain invalid fields",
         });
         return;
@@ -273,7 +273,7 @@ async function count(req: Request, res: Response) {
     logURL(req);
 
     try {
-        const count = await TodoModel.countDocuments();
+        const count = await TodoModel.countDocuments({ isDeleted: false });
 
         res.status(EServerResponseCodes.OK).json({
             rescode: EServerResponseRescodes.SUCCESS,

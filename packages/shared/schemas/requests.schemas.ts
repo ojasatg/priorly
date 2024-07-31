@@ -8,27 +8,30 @@ export const CreateTodoRequestSchema = z.object({
         .max(60, "Title cannnot be more than 60 characters"),
 });
 
-export const EditTodoChangesSchema = CreateTodoRequestSchema.merge(
-    z.object({
-        description: z
-            .string()
-            .max(300, "Description cannot be more than 300 characters")
-            .nullish(),
+export const EditTodoChangesSchema = z.object({
+    title: z
+        .string()
+        .min(1, "Title is required")
+        .max(60, "Title cannnot be more than 60 characters")
+        .nullish(),
+    description: z
+        .string()
+        .max(300, "Description cannot be more than 300 characters")
+        .nullish(),
 
-        priority: z.nativeEnum(TODO_PRIORITY).nullish(),
+    priority: z.nativeEnum(TODO_PRIORITY).nullish(),
 
-        isImportant: z.boolean().nullish(),
-        isUrgent: z.boolean().nullish(),
-        isDone: z.boolean().nullish(),
-        isDeleted: z.boolean().nullish(),
+    isImportant: z.boolean().nullish(),
+    isUrgent: z.boolean().nullish(),
+    isDone: z.boolean().nullish(),
+    isDeleted: z.boolean().nullish(),
 
-        completedOn: z.number().nullish(),
-        deletedOn: z.number().nullish(),
+    completedOn: z.number().nullish(),
+    deletedOn: z.number().nullish(),
 
-        deadline: z.number().nullish(),
-        reminder: z.number().nullish(),
-    }),
-);
+    deadline: z.number().nullish(),
+    reminder: z.number().nullish(),
+});
 
 export const EditTodoRequestSchema = z.object({
     changes: EditTodoChangesSchema.omit({ deletedOn: true, completedOn: true }),

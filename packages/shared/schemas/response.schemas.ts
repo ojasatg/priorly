@@ -16,6 +16,8 @@ export const TodoDetailsResponseSchema = CreateTodoResponseSchema.merge(
     z.object({
         completedOn: z.number().nullish(),
         deletedOn: z.number().nullish(),
+        updatedOn: z.number().nullish(),
+        createdOn: z.number().nullish(),
     }),
 );
 
