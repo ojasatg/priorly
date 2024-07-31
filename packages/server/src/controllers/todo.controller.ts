@@ -8,8 +8,9 @@ import {
     CreateTodoResponseSchema,
     CreateTodoRequestSchema,
     TodoDetailsResponseSchema,
-    type TEditTodoRequestSchema,
-    EditTodoRequestSchema,
+    type TEditTodoChangesSchema,
+    EditTodoChangesSchema,
+    getCurrentTimeStamp,
 } from "shared";
 
 import { logURL } from "../utils/logger.utils";
@@ -64,9 +65,9 @@ async function create(req: Request, res: Response) {
 }
 
 async function details(req: Request, res: Response) {
-    const todoID = req.query.id;
+    const todoId = req.query.id;
 
-    if (!isValidObjectId(todoID)) {
+    if (!isValidObjectId(todoId)) {
         res.status(EServerResponseCodes.BAD_REQUEST).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to fetch the todo details",
@@ -76,7 +77,7 @@ async function details(req: Request, res: Response) {
     }
 
     try {
-        const foundTodo = await TodoModel.findById(todoID);
+        const foundTodo = await TodoModel.findById(todoId);
         if (!_.isEmpty(foundTodo)) {
             const todo = TodoDetailsResponseSchema.parse(foundTodo);
 
@@ -110,17 +111,8 @@ async function details(req: Request, res: Response) {
 async function all(req: Request, res: Response) {
     logURL(req);
 
-    // const filters = req.query as Record<string, string>;
-    // if (_.isEmpty(filters)) {
-    //     // making sure that we automatically fetch not deleted todos when we don't pass any filter
-    //     filters["isDeleted"] = "false";
-    // }
-
     const cursor = Number(req.query.cursor) || 0;
     const limit = Number(req.query.limit) || 10;
-
-    // building filter
-    // const selector = getSelector(filters);
 
     try {
         const responseTodos = await TodoModel.find({}, null, {
@@ -150,10 +142,10 @@ async function all(req: Request, res: Response) {
 }
 
 async function edit(req: Request, res: Response) {
-    const todoID = req.query.id as string; // taking id in query
-    const changes = req.body.changes; // taking id in body, will require some extra work of processing the request.
+    const todoId = req.query.id as string; // taking id in query
+    const changes = req.body?.changes as TEditTodoChangesSchema; // taking id in body, will require some extra work of processing the request.
 
-    if (!todoID) {
+    if (!todoId) {
         res.status(EServerResponseCodes.BAD_REQUEST).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to create todo",
@@ -172,7 +164,7 @@ async function edit(req: Request, res: Response) {
     }
 
     try {
-        EditTodoRequestSchema.parse(changes);
+        EditTodoChangesSchema.parse(changes);
     } catch (error) {
         res.status(EServerResponseCodes.BAD_REQUEST).json({
             rescode: EServerResponseRescodes.ERROR,
@@ -181,6 +173,123 @@ async function edit(req: Request, res: Response) {
         });
         return;
     }
+
+    if (changes.isDone && changes.isDeleted) {
+        res.status(EServerResponseCodes.BAD_REQUEST).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to update todos",
+            error: "Bad request: Invalid state transition, cannot mark isDone and isDeleted together",
+        });
+        return;
+    }
+
+    if (changes.isDone) {
+        changes.reminder = null;
+        changes.deadline = null;
+        changes.completedOn = getCurrentTimeStamp();
+    } else {
+        changes.completedOn = null;
+    }
+
+    if (changes.isDeleted) {
+        changes.deletedOn = getCurrentTimeStamp();
+    } else {
+        changes.deletedOn = null;
+    }
+
+    try {
+        const updatedTodo = await TodoModel.findByIdAndUpdate(
+            todoId,
+            { $set: changes },
+            { new: true }, // returns the updated todo otherwise old todo
+        );
+        if (_.isEmpty(updatedTodo)) {
+            res.status(EServerResponseCodes.NOT_FOUND).json({
+                rescode: EServerResponseRescodes.ERROR,
+                message: "Unable to delete the todo",
+                error: "Requested item does not exist",
+            });
+        } else {
+            const todo = TodoDetailsResponseSchema.parse(updatedTodo);
+            res.status(EServerResponseCodes.OK).json({
+                rescode: EServerResponseRescodes.SUCCESS,
+                message: "Todo updated successfully",
+                data: {
+                    todo: todo,
+                },
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to update the todo details",
+            error: "Internal Server Error",
+        });
+    }
+}
+
+async function remove(req: Request, res: Response) {
+    logURL(req);
+    const todoId = req.query.id as string;
+
+    if (!todoId) {
+        res.status(EServerResponseCodes.BAD_REQUEST).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to create todo",
+            error: "Bad request: ID is required",
+        });
+        return;
+    }
+
+    try {
+        const todo = await TodoModel.findByIdAndDelete(todoId);
+        if (_.isEmpty(todo)) {
+            res.status(EServerResponseCodes.NOT_FOUND).json({
+                rescode: EServerResponseRescodes.ERROR,
+                message: "Unable to delete the todo",
+                error: "Requested item does not exist",
+            });
+        } else {
+            res.status(EServerResponseCodes.OK).json({
+                rescode: EServerResponseRescodes.SUCCESS,
+                message: "Todo deleted successfully",
+                data: {
+                    id: todoId,
+                },
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to delete the todo",
+            error: "Internal Server Error",
+        });
+    }
+}
+
+async function count(req: Request, res: Response) {
+    logURL(req);
+
+    try {
+        const count = await TodoModel.countDocuments();
+
+        res.status(EServerResponseCodes.OK).json({
+            rescode: EServerResponseRescodes.SUCCESS,
+            message: "Todos fetched successfully",
+            data: {
+                count: count,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to fetch todos",
+            error: "Internal Server Error",
+        });
+    }
 }
 
 const TodoController = {
@@ -188,6 +297,8 @@ const TodoController = {
     details,
     all,
     edit,
+    remove,
+    count,
 };
 
 export default TodoController;

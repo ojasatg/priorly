@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {
     CreateTodoRequestSchema,
-    EditTodoRequestSchema,
+    EditTodoChangesSchema,
 } from "./requests.schemas";
 
 export const CreateTodoResponseSchema = CreateTodoRequestSchema.merge(
@@ -11,7 +11,7 @@ export const CreateTodoResponseSchema = CreateTodoRequestSchema.merge(
 );
 
 export const TodoDetailsResponseSchema = CreateTodoResponseSchema.merge(
-    EditTodoRequestSchema,
+    EditTodoChangesSchema,
 ).merge(
     z.object({
         completedOn: z.number().nullish(),

@@ -8,7 +8,7 @@ export const CreateTodoRequestSchema = z.object({
         .max(60, "Title cannnot be more than 60 characters"),
 });
 
-export const EditTodoRequestSchema = CreateTodoRequestSchema.merge(
+export const EditTodoChangesSchema = CreateTodoRequestSchema.merge(
     z.object({
         description: z
             .string()
@@ -22,10 +22,18 @@ export const EditTodoRequestSchema = CreateTodoRequestSchema.merge(
         isDone: z.boolean().nullish(),
         isDeleted: z.boolean().nullish(),
 
+        completedOn: z.number().nullish(),
+        deletedOn: z.number().nullish(),
+
         deadline: z.number().nullish(),
         reminder: z.number().nullish(),
     }),
 );
 
+export const EditTodoRequestSchema = z.object({
+    changes: EditTodoChangesSchema.omit({ deletedOn: true, completedOn: true }),
+});
+
 export type TCreateTodoRequestSchema = z.infer<typeof CreateTodoRequestSchema>;
+export type TEditTodoChangesSchema = z.infer<typeof EditTodoChangesSchema>;
 export type TEditTodoRequestSchema = z.infer<typeof EditTodoRequestSchema>;
