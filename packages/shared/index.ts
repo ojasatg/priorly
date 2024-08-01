@@ -1,5 +1,5 @@
 // utils
-export * from "./utils/datetime";
+export * from "./utils/datetime.utils";
 
 // schemas
 export * from "./schemas/requests.schemas";

@@ -11,6 +11,8 @@ import {
     type TEditTodoChangesSchema,
     EditTodoChangesSchema,
     getCurrentTimeStamp,
+    AllTodosRequestSchema,
+    CountTodosRequestSchema,
 } from "shared";
 
 import { logURL } from "../utils/logger.utils";
@@ -81,7 +83,7 @@ async function details(req: Request, res: Response) {
         if (!_.isEmpty(foundTodo)) {
             const todo = TodoDetailsResponseSchema.parse(foundTodo);
 
-            res.status(EServerResponseCodes.CREATED).json({
+            res.status(EServerResponseCodes.OK).json({
                 rescode: EServerResponseRescodes.SUCCESS,
                 message: "Fetched todo details successfully",
                 data: {
@@ -111,11 +113,27 @@ async function details(req: Request, res: Response) {
 async function all(req: Request, res: Response) {
     logURL(req);
 
-    const cursor = Number(req.query.cursor) || 0;
-    const limit = Number(req.query.limit) || 10;
+    try {
+        AllTodosRequestSchema.parse(req.body);
+    } catch (error) {
+        res.status(EServerResponseCodes.BAD_REQUEST).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to fetch todos",
+            error: "Bad request: Request body contains invalid fields and/or values",
+        });
+        return;
+    }
+
+    const cursor = req.body.cursor ?? 0;
+    const limit = req.body.limit ?? 10;
+    const filters = req.body.filters ?? {};
+
+    if (filters.isDeleted === null || filters.isDeleted === undefined) {
+        filters.isDeleted = false;
+    }
 
     try {
-        const responseTodos = await TodoModel.find({}, null, {
+        const responseTodos = await TodoModel.find(filters, null, {
             skip: cursor,
             limit,
         }); // pagination logic with skip and limit
@@ -169,38 +187,74 @@ async function edit(req: Request, res: Response) {
         res.status(EServerResponseCodes.BAD_REQUEST).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to update the todo",
-            error: "Bad request: Changes contain invalid fields",
+            error: "Bad request: Changes contain invalid fields and/or values",
         });
         return;
     }
 
-    if (changes.isDone && changes.isDeleted) {
+    if (
+        (changes.isDone ||
+            changes.isDone === false ||
+            changes.isDeleted ||
+            changes.isDeleted === false) &&
+        _.values(changes).length > 1
+    ) {
         res.status(EServerResponseCodes.BAD_REQUEST).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to update todos",
-            error: "Bad request: Invalid state transition, cannot mark isDone and isDeleted together",
+            error: "Bad request: Can not apply more changes when toggling deleted or done",
         });
         return;
     }
 
+    const updates = _.cloneDeep(changes) as TEditTodoChangesSchema & {
+        completedOn: number | null;
+        deletedOn: number | null;
+    };
+
     if (changes.isDone) {
-        changes.reminder = null;
-        changes.deadline = null;
-        changes.completedOn = getCurrentTimeStamp();
+        updates.reminder = null;
+        updates.deadline = null;
+        updates.completedOn = getCurrentTimeStamp();
     } else {
-        changes.completedOn = null;
+        updates.completedOn = null;
     }
 
     if (changes.isDeleted) {
-        changes.deletedOn = getCurrentTimeStamp();
+        updates.deletedOn = getCurrentTimeStamp();
     } else {
-        changes.deletedOn = null;
+        updates.deletedOn = null;
+    }
+
+    try {
+        // if todo is deleted then forbid other changes other than recovery
+        const todo = await TodoModel.findById(todoId);
+
+        if (
+            todo?.isDeleted &&
+            changes.isDeleted &&
+            _.values(changes).length > 1
+        ) {
+            res.status(EServerResponseCodes.BAD_REQUEST).json({
+                rescode: EServerResponseRescodes.ERROR,
+                message: "Unable to update todos",
+                error: "Bad request: Can not apply any change on deleted todo",
+            });
+            return;
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to update the todo details",
+            error: "Internal Server Error",
+        });
     }
 
     try {
         const updatedTodo = await TodoModel.findByIdAndUpdate(
             todoId,
-            { $set: changes },
+            { $set: updates },
             { new: true }, // returns the updated todo otherwise old todo
         );
         if (_.isEmpty(updatedTodo)) {
@@ -273,7 +327,23 @@ async function count(req: Request, res: Response) {
     logURL(req);
 
     try {
-        const count = await TodoModel.countDocuments({ isDeleted: false });
+        CountTodosRequestSchema.parse(req.body);
+    } catch (error) {
+        res.status(EServerResponseCodes.BAD_REQUEST).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to fetch todos",
+            error: "Bad request: Request body contains invalid fields",
+        });
+        return;
+    }
+
+    const filters = req.body.filters ?? {};
+    if (filters.isDeleted === null || filters.isDeleted === undefined) {
+        filters.isDeleted = false;
+    }
+
+    try {
+        const count = await TodoModel.countDocuments(filters);
 
         res.status(EServerResponseCodes.OK).json({
             rescode: EServerResponseRescodes.SUCCESS,
