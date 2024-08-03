@@ -10,7 +10,7 @@ import {
 import UserModel from "../models/UserModel";
 
 // Signup actually creates the user so it has to be here
-export async function signup(req: Request, res: Response) {
+async function signup(req: Request, res: Response) {
     let userDetails = req.body;
 
     if (_.isEmpty(userDetails)) {
@@ -58,5 +58,13 @@ export async function signup(req: Request, res: Response) {
 }
 
 // todo: Signup and login response schema should be the same - both send nothing, but token in the headers
-export async function login() {}
-export async function logout() {}
+async function login() {}
+async function logout() {}
+
+const AuthController = {
+    signup,
+    login,
+    logout,
+};
+
+export default AuthController;

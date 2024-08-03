@@ -171,3 +171,9 @@ export async function edit(req: Request, res: Response) {
 //         });
 //     }
 // }
+
+const UserController = {
+    edit,
+};
+
+export default UserController;
