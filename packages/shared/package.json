@@ -3,6 +3,9 @@
     "module": "index.ts",
     "type": "module",
     "private": true,
+    "scripts": {
+        "build": "rm -rf dist && bun run tsc"
+    },
     "devDependencies": {
         "@types/bun": "latest"
     },

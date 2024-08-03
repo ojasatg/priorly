@@ -3,7 +3,8 @@
     "module": "app.ts",
     "type": "module",
     "scripts": {
-        "dev": "bun --hot ./src/app.ts"
+        "dev": "bun --hot ./src/app.ts",
+        "build": "rm -rf dist && bun run tsc"
     },
     "devDependencies": {
         "@types/bun": "latest",

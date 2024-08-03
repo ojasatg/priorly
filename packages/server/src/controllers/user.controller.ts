@@ -103,71 +103,71 @@ export async function edit(req: Request, res: Response) {
     }
 }
 
-export async function changePassword(req: Request, res: Response) {}
+// export async function changePassword(req: Request, res: Response) {}
 
-async function remove(req: Request, res: Response) {
-    logURL(req);
-    const todoId = req.query.id as string;
+// export async function remove(req: Request, res: Response) {
+//     logURL(req);
+//     const todoId = req.query.id as string;
 
-    if (!todoId) {
-        // todo: if not logged in send not authorised
-        // todo: this kind of check should be in a middleware
-        return res.status(EServerResponseCodes.UNAUTHORIZED).json({
-            rescode: EServerResponseRescodes.ERROR,
-            message: "Please log in to continue",
-            error: "Unauthorised",
-        });
-    }
+//     if (!todoId) {
+//         // todo: if not logged in send not authorised
+//         // todo: this kind of check should be in a middleware
+//         return res.status(EServerResponseCodes.UNAUTHORIZED).json({
+//             rescode: EServerResponseRescodes.ERROR,
+//             message: "Please log in to continue",
+//             error: "Unauthorised",
+//         });
+//     }
 
-    // todo: get user id from the token and other details from that you'll get the id
-    const userEmail = ""; // todo: get the email by decoding the token
+//     // todo: get user id from the token and other details from that you'll get the id
+//     const userEmail = ""; // todo: get the email by decoding the token
 
-    let user;
-    try {
-        // if todo is deleted then forbid other changes other than recovery
-        user = await UserModel.findOne({ email: userEmail });
+//     let user;
+//     try {
+//         // if todo is deleted then forbid other changes other than recovery
+//         user = await UserModel.findOne({ email: userEmail });
 
-        if (_.isEmpty(user)) {
-            return res.status(EServerResponseCodes.NOT_FOUND).json({
-                rescode: EServerResponseRescodes.ERROR,
-                message: "User not found, please sign up",
-                error: "User does not exist",
-            });
-        }
-    } catch (error) {
-        console.error(error);
-        return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
-            rescode: EServerResponseRescodes.ERROR,
-            message: "Unknown error occured, please try again later",
-            error: "Internal Server Error",
-        });
-    }
+//         if (_.isEmpty(user)) {
+//             return res.status(EServerResponseCodes.NOT_FOUND).json({
+//                 rescode: EServerResponseRescodes.ERROR,
+//                 message: "User not found, please sign up",
+//                 error: "User does not exist",
+//             });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+//             rescode: EServerResponseRescodes.ERROR,
+//             message: "Unknown error occured, please try again later",
+//             error: "Internal Server Error",
+//         });
+//     }
 
-    const userId = user.id;
+//     const userId = user.id;
 
-    try {
-        const user = await UserModel.findByIdAndDelete(userId);
-        if (_.isEmpty(user)) {
-            return res.status(EServerResponseCodes.NOT_FOUND).json({
-                rescode: EServerResponseRescodes.ERROR,
-                message: "Unable to delete the account",
-                error: "User does not exist",
-            });
-        } else {
-            return res.status(EServerResponseCodes.OK).json({
-                rescode: EServerResponseRescodes.SUCCESS,
-                message: "Account deleted successfully",
-                data: {
-                    // todo: send nothing
-                },
-            });
-        }
-    } catch (error) {
-        console.error(error);
-        return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
-            rescode: EServerResponseRescodes.ERROR,
-            message: "Unable to delete the account",
-            error: "Internal Server Error",
-        });
-    }
-}
+//     try {
+//         const user = await UserModel.findByIdAndDelete(userId);
+//         if (_.isEmpty(user)) {
+//             return res.status(EServerResponseCodes.NOT_FOUND).json({
+//                 rescode: EServerResponseRescodes.ERROR,
+//                 message: "Unable to delete the account",
+//                 error: "User does not exist",
+//             });
+//         } else {
+//             return res.status(EServerResponseCodes.OK).json({
+//                 rescode: EServerResponseRescodes.SUCCESS,
+//                 message: "Account deleted successfully",
+//                 data: {
+//                     // todo: send nothing
+//                 },
+//             });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+//             rescode: EServerResponseRescodes.ERROR,
+//             message: "Unable to delete the account",
+//             error: "Internal Server Error",
+//         });
+//     }
+// }

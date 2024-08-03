@@ -57,6 +57,6 @@ export async function signup(req: Request, res: Response) {
     }
 }
 
-// todo: Signup and login response schema should be the same - both send nothing, but id in the headers
+// todo: Signup and login response schema should be the same - both send nothing, but token in the headers
 export async function login() {}
 export async function logout() {}
