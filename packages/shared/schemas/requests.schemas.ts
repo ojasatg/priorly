@@ -69,12 +69,12 @@ export type TCountTodosRequestSchema = z.infer<typeof CountTodosRequestSchema>;
 export type TAllTodosFilterSchema = z.infer<typeof AllTodosFilterSchema>;
 
 const userEmailSchema = z
-    .string()
+    .string({ required_error: "Email is required" })
     .max(100, "Email cannot be more than 100 characters long")
     .regex(/^[\w.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Please enter a valid email");
 
 const userPasswordSchema = z
-    .string()
+    .string({ required_error: "Password is required" })
     .min(8, { message: "Password must be at least 8 characters long." })
     .regex(/[a-z]/, {
         message: "Password must contain at least one lowercase letter.",
@@ -85,7 +85,7 @@ const userPasswordSchema = z
     .regex(/\d/, {
         message: "Password must contain at least one digit.",
     })
-    .regex(/[@$!%*?&]/, {
+    .regex(/[!@#$%^&*()_\-+={}[\]|;:'",.<>?/~]/, {
         message: "Password must contain at least one special character.",
     });
 
@@ -95,16 +95,18 @@ const userNameSchema = z
     .nullish();
 
 // Request Users
-export const CreateUserSchemaRequest = z
+export const CreateUserRequestSchema = z
     .object({
         name: userNameSchema,
         email: userEmailSchema,
         password: userPasswordSchema,
-        confirmPassword: userPasswordSchema,
+        confirmPassword: z.string({
+            required_error: "Confirm password is required",
+        }), // making this string instead of userPasswordSchema ensures that we get "Passwords do not match" error as the first element of the errors array
     })
     .strict()
     .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords must match.",
+        message: "Passwords do not match",
         path: ["confirmPassword"],
     });
 
@@ -115,5 +117,5 @@ export const EditUserRequestSchema = z.object({
     }),
 });
 
-export type TCreateUserSchemaRequest = z.infer<typeof CreateUserSchemaRequest>;
+export type TCreateUserRequestSchema = z.infer<typeof CreateUserRequestSchema>;
 export type TEditUserRequestSchema = z.infer<typeof EditUserRequestSchema>;

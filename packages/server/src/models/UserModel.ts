@@ -2,7 +2,12 @@ import mongoose, { Schema } from "mongoose";
 
 const UserSchema = new Schema(
     {
-        email: { type: String, required: [true, "A valid email is required"] },
+        email: {
+            type: String,
+            required: [true, "A valid email is required"],
+            unique: [true, "Email already taken, please use a different email"],
+            lowercase: [true], // converts the value to lower case before storing
+        },
         password: {
             type: String,
             required: [true, "A valid password is required"],

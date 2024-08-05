@@ -7,6 +7,7 @@ export enum EServerResponseCodes {
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,
     NOT_FOUND = 404,
+    CONFLICT = 409,
 
     MOVED = 301,
 
@@ -17,4 +18,9 @@ export enum EServerResponseRescodes {
     SUCCESS = 0,
     ERROR = 1,
     QUEUED = 2,
+}
+
+export enum EMongooseError {
+    UNKNOWN = 1,
+    DUPLICATE = 11000,
 }

@@ -1,10 +1,15 @@
 import type { Request, Response } from "express";
 import _ from "lodash";
+import type { ZodError } from "zod";
+
 import {
     CreateUserResponseSchema,
-    CreateUserSchemaRequest,
+    CreateUserRequestSchema,
     EServerResponseCodes,
     EServerResponseRescodes,
+    getFormattedZodErrors,
+    getFormattedMongooseErrors,
+    type TMongooseError,
 } from "shared";
 
 import UserModel from "../models/UserModel";
@@ -22,17 +27,22 @@ async function signup(req: Request, res: Response) {
     }
 
     try {
-        userDetails = CreateUserSchemaRequest.parse(userDetails);
+        userDetails = CreateUserRequestSchema.parse(userDetails);
     } catch (error) {
+        const errors = getFormattedZodErrors(error as ZodError);
+
         return res.status(EServerResponseCodes.BAD_REQUEST).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to create user",
             error: "Bad request: Invalid data",
+            errors,
         });
     }
 
     try {
-        // todo: Delete confirm password key
+        // todo: do not receive username and passwords in request body
+
+        delete userDetails.confirmPassword;
         // todo: Store password as a hash
 
         const createdUser = await UserModel.create(userDetails);
@@ -48,18 +58,30 @@ async function signup(req: Request, res: Response) {
             },
         });
     } catch (error) {
-        console.error(error);
-        return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+        const { code, errors } = getFormattedMongooseErrors(
+            error as TMongooseError,
+        );
+
+        return res.status(code).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to create user",
             error: "Internal Server Error",
+            errors,
         });
     }
 }
 
 // todo: Signup and login response schema should be the same - both send nothing, but token in the headers
-async function login() {}
-async function logout() {}
+async function login(_req: Request, res: Response) {
+    return res.status(EServerResponseCodes.OK).json({
+        message: "Logged in successfully",
+    });
+}
+async function logout(_req: Request, res: Response) {
+    return res.status(EServerResponseCodes.OK).json({
+        message: "Logged out successfully",
+    });
+}
 
 const AuthController = {
     signup,
