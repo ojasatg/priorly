@@ -3,12 +3,12 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "concurrently \"cd packages/server && bun dev\"",
+        "dev": "bun --filter './packages/**/*' dev",
         "format": "prettier --write .",
         "lint": "bunx tsc --noEmit && eslint .",
         "lint:fix": "eslint --fix .",
         "clean": "rm -rf node_modules",
-        "clean:all": "concurrently \"rm -rf node_modules\" \"rm -rf shared/node_modules\" \"rm -rf client/node_modules\" \"rm -rf server/node_modules\""
+        "clean:all": "rm -rf node_modules && rm -rf shared/node_modules && rm -rf client/node_modules && rm -rf server/node_modules"
     },
     "devDependencies": {
         "@eslint/js": "^9.8.0",
@@ -16,7 +16,6 @@
         "@types/lodash": "^4.17.7",
         "@typescript-eslint/eslint-plugin": "^7.17.0",
         "@typescript-eslint/parser": "^7.17.0",
-        "concurrently": "^8.2.2",
         "eslint": "9.x",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^5.2.1",
