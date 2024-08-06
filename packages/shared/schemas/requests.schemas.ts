@@ -119,3 +119,11 @@ export const EditUserRequestSchema = z.object({
 
 export type TCreateUserRequestSchema = z.infer<typeof CreateUserRequestSchema>;
 export type TEditUserRequestSchema = z.infer<typeof EditUserRequestSchema>;
+
+// Request Auth
+export const LoginUserRequestSchema = z.object({
+    email: userEmailSchema,
+    password: z.string({ required_error: "Password is required" }),
+});
+
+export type TLoginUserRequestSchema = z.infer<typeof LoginUserRequestSchema>;

@@ -63,6 +63,7 @@ async function create(req: Request, res: Response) {
 }
 
 async function details(req: Request, res: Response) {
+    logURL(req);
     const todoId = req.query.id;
 
     if (!isValidObjectId(todoId)) {
@@ -151,6 +152,7 @@ async function all(req: Request, res: Response) {
 }
 
 async function edit(req: Request, res: Response) {
+    logURL(req);
     const todoId = req.query.id as string; // taking id in query
     const changes = req.body?.changes as TEditTodoChangesSchema; // taking id in body, will require some extra work of processing the request.
 

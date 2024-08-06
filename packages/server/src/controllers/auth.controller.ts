@@ -10,12 +10,16 @@ import {
     getFormattedZodErrors,
     getFormattedMongooseErrors,
     type TMongooseError,
+    LoginUserRequestSchema,
 } from "shared";
 
 import UserModel from "../models/UserModel";
+import { createAuthToken } from "../utils/auth.utils";
+import { logURL } from "../utils/logger.utils";
 
 // Signup actually creates the user so it has to be here
 async function signup(req: Request, res: Response) {
+    logURL(req);
     let userDetails = req.body;
 
     if (_.isEmpty(userDetails)) {
@@ -40,22 +44,20 @@ async function signup(req: Request, res: Response) {
     }
 
     try {
-        // todo: do not receive username and passwords in request body
-
         delete userDetails.confirmPassword;
-        // todo: Store password as a hash
 
         const createdUser = await UserModel.create(userDetails);
-        const user = CreateUserResponseSchema.parse(createdUser); // strips unnecessary keys
+        CreateUserResponseSchema.parse(createdUser); // strips unnecessary keys
 
-        // todo: send token in headers instead of id in body
+        const token = createAuthToken(createdUser.id);
+        res.cookie("auth", token, {
+            httpOnly: true,
+            maxAge: 3 * 24 * 60 * 60,
+        }); // expires in 3 days
 
         return res.status(EServerResponseCodes.CREATED).json({
             rescode: EServerResponseRescodes.SUCCESS,
-            message: "User created succesfully",
-            data: {
-                user: user,
-            },
+            message: "User signup successful",
         });
     } catch (error) {
         const { code, errors } = getFormattedMongooseErrors(
@@ -64,23 +66,81 @@ async function signup(req: Request, res: Response) {
 
         return res.status(code).json({
             rescode: EServerResponseRescodes.ERROR,
-            message: "Unable to create user",
+            message: "Unable to signup",
             error: "Internal Server Error",
             errors,
         });
     }
 }
 
-// todo: Signup and login response schema should be the same - both send nothing, but token in the headers
-async function login(_req: Request, res: Response) {
-    return res.status(EServerResponseCodes.OK).json({
-        message: "Logged in successfully",
-    });
+async function login(req: Request, res: Response) {
+    logURL(req);
+    let userDetails = req.body;
+
+    if (_.isEmpty(userDetails)) {
+        return res.status(EServerResponseCodes.BAD_REQUEST).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to create user",
+            error: "Bad request: Sufficient data not available",
+        });
+    }
+
+    try {
+        userDetails = LoginUserRequestSchema.parse(userDetails);
+    } catch (error) {
+        const errors = getFormattedZodErrors(error as ZodError);
+
+        return res.status(EServerResponseCodes.BAD_REQUEST).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to login user",
+            error: "Bad request: Invalid data",
+            errors,
+        });
+    }
+
+    try {
+        const foundUser = await UserModel.findOne({ email: userDetails.email });
+        if (!_.isEmpty(foundUser)) {
+            const token = createAuthToken(foundUser.id);
+            res.cookie("auth", token, {
+                httpOnly: true,
+                maxAge: 3 * 24 * 60 * 60,
+            }); // expires in 3 days
+
+            return res.status(EServerResponseCodes.CREATED).json({
+                rescode: EServerResponseRescodes.SUCCESS,
+                message: "User created succesfully",
+            });
+        } else {
+            return res.status(EServerResponseCodes.NOT_FOUND).json({
+                rescode: EServerResponseRescodes.ERROR,
+                message: "No user found with this email",
+                error: "Requested item does not exist",
+            });
+        }
+    } catch (error) {
+        return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to login",
+            error: "Internal Server Error",
+        });
+    }
 }
-async function logout(_req: Request, res: Response) {
-    return res.status(EServerResponseCodes.OK).json({
-        message: "Logged out successfully",
-    });
+
+async function logout(req: Request, res: Response) {
+    logURL(req);
+    try {
+        res.cookie("auth", ""); // clear the auth cookie
+        return res.status(EServerResponseCodes.OK).json({
+            message: "Logged out successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unable to logout",
+        });
+    }
 }
 
 const AuthController = {

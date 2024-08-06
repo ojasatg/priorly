@@ -1,11 +1,12 @@
 import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
 
 const UserSchema = new Schema(
     {
         email: {
             type: String,
             required: [true, "A valid email is required"],
-            unique: [true, "Email already taken, please use a different email"],
+            unique: [true],
             lowercase: [true], // converts the value to lower case before storing
         },
         password: {
@@ -33,6 +34,24 @@ UserSchema.virtual("updatedOn").get(function () {
 // Ensure virtual fields are serialised.
 UserSchema.set("toJSON", {
     virtuals: true,
+});
+
+// Hooks
+// Post means after saving the document
+UserSchema.post("save", function (_doc, next) {
+    // 'save' means save event
+    // 'doc' is the saved document
+    next(); // this is important for control flow
+});
+
+// Pre means before creation
+UserSchema.pre("save", async function (next) {
+    // We don't get the saved "document" in pre hooks, we get the "this" keyword.
+
+    const salt = await bcrypt.genSalt(); // generates a salt
+    this.password = await bcrypt.hash(this.password, salt); // hashes the password
+
+    next();
 });
 
 const UserModel = mongoose.model("Users", UserSchema);

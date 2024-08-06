@@ -23,11 +23,12 @@ export function getFormattedZodErrors(error: ZodError) {
 }
 
 export function getFormattedMongooseErrors(error: TMongooseError) {
-    const errors = {} as Record<string, EMongooseError>;
+    const errors = {} as Record<string, string>;
 
     // extracting the field which has erros
     const field = Object.keys(error.keyPattern)[0] || "unknown";
-    errors[field] = error.code;
+    errors[field] =
+        `${_.capitalize(field)} already taken, please use a different ${field}`;
 
     let statusCode = EServerResponseCodes.INTERNAL_SERVER_ERROR;
 
