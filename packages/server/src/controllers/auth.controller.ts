@@ -14,7 +14,11 @@ import {
 } from "shared";
 
 import UserModel from "../models/UserModel";
-import { invalidateSession, setUserSession } from "../utils/auth.utils";
+import {
+    invalidateSession,
+    setUserSession,
+    getNewCRSFToken,
+} from "../utils/auth.utils";
 import { logURL } from "../utils/logger.utils";
 
 // Signup actually creates the user so it has to be here
@@ -49,7 +53,8 @@ async function signup(req: Request, res: Response) {
         const createdUser = await UserModel.create(userDetails);
         CreateUserResponseSchema.parse(createdUser); // strips unnecessary keys
 
-        const sid = setUserSession(createdUser.id);
+        const csrfToken = getNewCRSFToken();
+        const sid = setUserSession(createdUser.id, csrfToken);
         res.cookie("sid", sid, {
             httpOnly: true,
             secure: true,
@@ -59,6 +64,9 @@ async function signup(req: Request, res: Response) {
         return res.status(EServerResponseCodes.CREATED).json({
             rescode: EServerResponseRescodes.SUCCESS,
             message: "User signup successful",
+            data: {
+                csrfToken,
+            },
         });
     } catch (error) {
         const { code, errors } = getFormattedMongooseErrors(
@@ -102,7 +110,8 @@ async function login(req: Request, res: Response) {
     try {
         const foundUser = await UserModel.findOne({ email: userDetails.email });
         if (!_.isEmpty(foundUser)) {
-            const sid = setUserSession(foundUser.id);
+            const csrfToken = getNewCRSFToken();
+            const sid = setUserSession(foundUser.id, csrfToken);
             res.cookie("sid", sid, {
                 httpOnly: true,
                 maxAge: 3 * 24 * 60 * 60,
@@ -110,7 +119,10 @@ async function login(req: Request, res: Response) {
 
             return res.status(EServerResponseCodes.CREATED).json({
                 rescode: EServerResponseRescodes.SUCCESS,
-                message: "User created succesfully",
+                message: "User logged in succesfully",
+                data: {
+                    csrfToken,
+                },
             });
         } else {
             return res.status(EServerResponseCodes.NOT_FOUND).json({
@@ -131,7 +143,7 @@ async function login(req: Request, res: Response) {
 async function logout(req: Request, res: Response) {
     logURL(req);
     try {
-        // GET SID FROM THE next() function in the AUTH MIDDLEWARE.
+        // todo: GET SID FROM THE next() function in the AUTH MIDDLEWARE.
         const sid = "";
         invalidateSession(sid);
 
