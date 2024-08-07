@@ -14,7 +14,7 @@ import {
 } from "shared";
 
 import UserModel from "../models/UserModel";
-import { createAuthToken } from "../utils/auth.utils";
+import { invalidateSession, setUserSession } from "../utils/auth.utils";
 import { logURL } from "../utils/logger.utils";
 
 // Signup actually creates the user so it has to be here
@@ -49,9 +49,10 @@ async function signup(req: Request, res: Response) {
         const createdUser = await UserModel.create(userDetails);
         CreateUserResponseSchema.parse(createdUser); // strips unnecessary keys
 
-        const token = createAuthToken(createdUser.id);
-        res.cookie("auth", token, {
+        const sid = setUserSession(createdUser.id);
+        res.cookie("sid", sid, {
             httpOnly: true,
+            secure: true,
             maxAge: 3 * 24 * 60 * 60,
         }); // expires in 3 days
 
@@ -101,8 +102,8 @@ async function login(req: Request, res: Response) {
     try {
         const foundUser = await UserModel.findOne({ email: userDetails.email });
         if (!_.isEmpty(foundUser)) {
-            const token = createAuthToken(foundUser.id);
-            res.cookie("auth", token, {
+            const sid = setUserSession(foundUser.id);
+            res.cookie("sid", sid, {
                 httpOnly: true,
                 maxAge: 3 * 24 * 60 * 60,
             }); // expires in 3 days
@@ -130,7 +131,11 @@ async function login(req: Request, res: Response) {
 async function logout(req: Request, res: Response) {
     logURL(req);
     try {
-        res.cookie("auth", ""); // clear the auth cookie
+        // GET SID FROM THE next() function in the AUTH MIDDLEWARE.
+        const sid = "";
+        invalidateSession(sid);
+
+        res.cookie("sid", ""); // clear the auth cookie
         return res.status(EServerResponseCodes.OK).json({
             message: "Logged out successfully",
         });

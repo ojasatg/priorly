@@ -1,0 +1,23 @@
+How to build - build.sh
+
+1. Bun install
+2. Build server
+3. Build client
+4. Place the env file in the build machine directories after building the project.
+5. Remove src files if build is not local.
+
+How to start - start.sh
+1. Start the server on the build machine
+2. Start the client on the build machine
+
+
+Start server and client separately just like you do in the dev machine.
+
+Q. Why you chose express and not sveltekit's api features?
+A. Because I wanted to learn express and node as well. This will be useful in real world scenario where the APIs are developed and managed by a separate team and the APIs have heavy business/data logic to perform.
+
+Q. Which auth mechanism are you using JWT or Session auth?
+A. Using sessions for good control over security as JWT token once issued can be used by anyone if not expired. Session is just a map which can be invalidated easily. One downside of session storage is to maintain a cache.
+
+Q. Why are you using CSRF Token?
+A. So that each client instance can store this token on their "stores" to avoid CSRF issue.

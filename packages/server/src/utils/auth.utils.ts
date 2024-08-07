@@ -1,21 +1,21 @@
-import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
-export function createAuthToken(userId: string) {
-    const secret = String(process.env.JWT_SECRET);
-    const MAX_AGE = 3 * 24 * 60 * 60; // 3 days in seconds
+const SESSIONS = new Map();
 
-    const token = jwt.sign({ id: userId }, secret, { expiresIn: MAX_AGE });
-    return token;
+export function setUserSession(userID: string) {
+    const newSessionID = uuidv4();
+    SESSIONS.set(newSessionID, userID);
+    return newSessionID;
 }
 
-export function getUserIdFromAuthToken(token: string) {
-    const secret = String(process.env.JWT_SECRET);
+export function getUserIDFromSession(sessionID: string) {
+    if (SESSIONS.has(sessionID)) {
+        return SESSIONS.get(sessionID);
+    } else {
+        return null;
+    }
+}
 
-    jwt.verify(token, secret, (err, decoded) => {
-        if (err) {
-            console.error("Token verification failed:", err);
-        } else {
-            return (decoded as { id: string })?.id;
-        }
-    });
+export function invalidateSession(sessionID: string) {
+    SESSIONS.delete(sessionID);
 }
