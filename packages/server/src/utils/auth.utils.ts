@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-const SESSIONS = new Map();
+const SESSIONS = new Map(); // todo: use cache or database for this
 
 export function setUserSession(userID: string, csrfToken: string) {
     const newSessionID = uuidv4();
