@@ -4,6 +4,6 @@
     "tabWidth": 4,
     "useTabs": false,
     "singleQuote": false,
-    "plugins": ["eslint-plugin-prettier", "prettier-plugin-svelte"],
+    "plugins": ["prettier-plugin-svelte"],
     "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
 }

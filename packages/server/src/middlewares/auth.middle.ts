@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 
 export function isAuthenticated(
-    req: Request,
-    res: Response,
+    _req: Request,
+    _res: Response,
     next: NextFunction,
 ) {
     // check the session id (sid) from cookie
