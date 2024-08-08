@@ -1,7 +1,3 @@
-<script>
-    console.log("however");
-</script>
-
 <div class="app">
     <header>
         <p>This is App Header in layout</p>
