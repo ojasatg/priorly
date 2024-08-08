@@ -1,24 +1,45 @@
+import js from "@eslint/js";
+import ts from "typescript-eslint";
+import svelte from "eslint-plugin-svelte";
+import prettier from "eslint-config-prettier";
 import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
 
+/** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
-    {
-        files: ["**/*.{js,mjs,cjs,ts,svelte}"],
-    },
+    js.configs.recommended,
+    ...ts.configs.recommended,
+    ...svelte.configs["flat/recommended"],
+    prettier,
+    ...svelte.configs["flat/prettier"],
     {
         languageOptions: {
             globals: {
                 ...globals.browser,
-                ...globals.node,
-            },
-        },
+                ...globals.node
+            }
+        }
     },
-    pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
     {
-        rules: {
-            "no-console": ["error", { allow: ["warn", "error", "info"] }], // Disallow console.log, but allow console.warn and console.error
+        files: ["**/*.svelte", "**/*.ts", "**/*.js"],
+        languageOptions: {
+            parserOptions: {
+                parser: ts.parser
+            }
         },
+        rules: {
+            "prefer-const": [
+                "error",
+                {
+                    destructuring: "any",
+                    ignoreReadBeforeAssign: false
+                }
+            ],
+            curly: ["error", "all"],
+            "no-console": ["error", { allow: ["warn", "error", "info"] }],
+            "@typescript-eslint/no-unsafe-function-type": ["warn"]
+        }
     },
+    {
+        ignores: ["build/", ".svelte-kit/", "dist/"]
+    }
 ];

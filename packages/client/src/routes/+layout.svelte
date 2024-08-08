@@ -1,7 +1,5 @@
 <script>
-    import "../app.css";
-
-    console.log("however")
+    console.log("however");
 </script>
 
 <div class="app">
@@ -17,6 +15,3 @@
         <p>This is app footer in the layout</p>
     </footer>
 </div>
-
-<style scoped>
-</style>
