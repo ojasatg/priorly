@@ -121,7 +121,7 @@ async function login(req: Request, res: Response) {
                 .status(EServerResponseCodes.OK)
                 .json({
                     rescode: EServerResponseRescodes.SUCCESS,
-                    message: "User signup successful",
+                    message: "User logged in",
                     data: {},
                 });
         } else {
@@ -143,11 +143,10 @@ async function login(req: Request, res: Response) {
 async function logout(req: Request, res: Response) {
     logURL(req);
     try {
-        // todo: GET SID FROM THE next() function in the AUTH MIDDLEWARE.
-        const sid = "";
+        const sid = req.query.sid as string;
         await invalidateSession(sid);
-
         res.cookie("sid", ""); // clear the auth cookie
+
         return res.status(EServerResponseCodes.OK).json({
             rescode: EServerResponseRescodes.SUCCESS,
             message: "Logged out successfully",

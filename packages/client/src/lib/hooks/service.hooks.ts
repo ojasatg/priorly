@@ -57,7 +57,7 @@ async function createService<TData>({
             switch (status) {
                 case EServerResponseCodes.FORBIDDEN:
                     // handleAuthenticationError(...)
-                    // if response has any error, show alert here, dont return anything
+                    // if response has any error, show alert here, redirect user to the login page, and dont return anything
                     break;
                 case EServerResponseCodes.UNAUTHORIZED:
                     // doesn't have permission

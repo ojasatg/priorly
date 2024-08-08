@@ -117,8 +117,11 @@ export const EditUserRequestSchema = z.object({
     }),
 });
 
+export const DeleteUserRequestSchema = z.object({});
+
 export type TCreateUserRequestSchema = z.infer<typeof CreateUserRequestSchema>;
 export type TEditUserRequestSchema = z.infer<typeof EditUserRequestSchema>;
+export type TDeleteUserRequestSchema = z.infer<typeof DeleteUserRequestSchema>;
 
 // Request Auth
 export const LoginUserRequestSchema = z.object({

@@ -55,7 +55,7 @@ UserSchema.pre("save", async function (next) {
     next();
 });
 
-UserSchema.pre("deleteOne", async function (next) {
+UserSchema.pre("findOneAndDelete", async function (next) {
     // Before deleting the user, delete all its todos
     try {
         const userID = this.getFilter()._id;

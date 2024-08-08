@@ -9,6 +9,6 @@ const router = Router();
 
 router.use("/todo", isAuthenticated, TodoRouter);
 router.use("/auth", AuthRouter);
-router.use("/user", UserRouter);
+router.use("/user", isAuthenticated, UserRouter);
 
 export default router;

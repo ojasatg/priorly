@@ -27,6 +27,7 @@ export async function isAuthenticated(
 
             if (!_.isEmpty(user)) {
                 req.query.userID = userID;
+                req.query.sid = sid;
                 next();
             } else {
                 return res.status(EServerResponseCodes.NOT_FOUND).json({

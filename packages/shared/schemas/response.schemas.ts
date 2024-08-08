@@ -1,25 +1,19 @@
 import { z } from "zod";
-import {
-    CreateTodoRequestSchema,
-    EditTodoChangesSchema,
-} from "./requests.schemas";
+import { EditTodoChangesSchema } from "./requests.schemas";
 
-export const CreateTodoResponseSchema = CreateTodoRequestSchema.merge(
+export const TodoDetailsResponseSchema = EditTodoChangesSchema.merge(
     z.object({
         id: z.string(),
-    }),
-);
-
-export const TodoDetailsResponseSchema = CreateTodoResponseSchema.merge(
-    EditTodoChangesSchema,
-).merge(
-    z.object({
         completedOn: z.number().nullish(),
         deletedOn: z.number().nullish(),
         updatedOn: z.number().nullish(),
         createdOn: z.number().nullish(),
     }),
 );
+
+export const CreateTodoResponseSchema = z.object({
+    todo: TodoDetailsResponseSchema,
+});
 
 export const AllTodosResponseSchema = z.object({
     todos: z.array(TodoDetailsResponseSchema),
@@ -36,15 +30,17 @@ export type TTodoDetailsResponseSchema = z.infer<
 
 export type TAllTodosResponseSchema = z.infer<typeof AllTodosResponseSchema>;
 
-// Users
-
+// Users and Auth
 export const CreateUserResponseSchema = z.object({});
-
 export const LoginUserResponseSchema = CreateUserResponseSchema;
 export const EditUserResponseSchema = CreateUserResponseSchema;
+export const DeleteUserResponseSchema = CreateUserResponseSchema;
 
 export type TCreateUserResponseSchema = z.infer<
     typeof CreateUserResponseSchema
 >;
 export type TLoginUserResponseSchema = z.infer<typeof LoginUserResponseSchema>;
 export type TEditUserResponseSchema = z.infer<typeof EditUserResponseSchema>;
+export type TDeleteUserResponseSchema = z.infer<
+    typeof DeleteUserResponseSchema
+>;

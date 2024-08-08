@@ -7,8 +7,12 @@ import APIs from "$constants/api.consts";
 import {
     AllTodosRequestSchema,
     AllTodosResponseSchema,
+    CreateTodoRequestSchema,
+    CreateTodoResponseSchema,
+    type TCreateTodoResponseSchema,
     type TAllTodosRequestSchema,
     type TAllTodosResponseSchema,
+    type TCreateTodoRequestSchema,
 } from "shared";
 
 const todoService = useCreateService();
@@ -26,8 +30,22 @@ function getAllTodos({ showAlerts, requestData }: IPostAPIParams<TAllTodosReques
     });
 }
 
+function createTodo({ showAlerts, requestData }: IPostAPIParams<TCreateTodoRequestSchema>) {
+    return todoService<TCreateTodoResponseSchema>({
+        url: APIs.CREATE_TODO,
+        options: {
+            method: EAPIRequestMethod.POST,
+            body: requestData,
+        },
+        requestSchema: CreateTodoRequestSchema,
+        responseSchema: CreateTodoResponseSchema,
+        showAlerts: showAlerts,
+    });
+}
+
 const TodoService = {
     getAllTodos,
+    createTodo,
 };
 
 export default TodoService;

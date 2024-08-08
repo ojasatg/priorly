@@ -47,7 +47,8 @@ async function create(req: Request, res: Response) {
             ...reqTodo,
             user: userID,
         });
-        const todo = CreateTodoResponseSchema.parse(createdTodo); // strips unnecessary keys
+
+        const todo = CreateTodoResponseSchema.parse({ todo: createdTodo }); // strips unnecessary keys
 
         return res.status(EServerResponseCodes.CREATED).json({
             rescode: EServerResponseRescodes.SUCCESS,
@@ -110,8 +111,6 @@ async function details(req: Request, res: Response) {
 async function all(req: Request, res: Response) {
     logURL(req);
 
-    // console.log("userid from middleware: ", req.query.userID);
-
     try {
         AllTodosRequestSchema.parse(req.body);
     } catch (error) {
@@ -129,6 +128,9 @@ async function all(req: Request, res: Response) {
     if (filters.isDeleted === null || filters.isDeleted === undefined) {
         filters.isDeleted = false;
     }
+
+    const userID = req.query.userID;
+    filters.user = userID;
 
     try {
         const responseTodos = await TodoModel.find(filters, null, {

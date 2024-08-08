@@ -9,6 +9,7 @@ import {
 
 import UserModel from "../models/UserModel";
 import { logURL } from "../utils/logger.utils";
+import { invalidateSession } from "../utils/auth.utils";
 
 export async function edit(req: Request, res: Response) {
     logURL(req);
@@ -172,8 +173,38 @@ export async function edit(req: Request, res: Response) {
 //     }
 // }
 
+export async function remove(req: Request, res: Response) {
+    logURL(req);
+
+    const userID = req.query.userID as string; // taking id in query from the isAuthenticated middleware
+
+    console.log("User id: ", userID);
+
+    try {
+        await UserModel.findByIdAndDelete(userID);
+
+        const sid = req.query.sid as string;
+        await invalidateSession(sid);
+        res.cookie("sid", ""); // clear the auth cookie
+
+        return res.status(EServerResponseCodes.OK).json({
+            rescode: EServerResponseRescodes.SUCCESS,
+            message: "User deleted successfully",
+            data: {},
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            message: "Unknown error occured, please try again later",
+            error: "Internal Server Error",
+        });
+    }
+}
+
 const UserController = {
     edit,
+    remove,
 };
 
 export default UserController;
