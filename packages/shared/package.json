@@ -4,7 +4,12 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "build": "rm -rf dist && bun run tsc"
+        "build": "rm -rf dist && bun run tsc",
+
+        "format": "prettier --write .",
+        "lint": "bunx tsc --noEmit && eslint .",
+        "lint:fix": "eslint --fix .",
+        "clean": "rm -rf node_modules"
     },
     "devDependencies": {
         "@types/bun": "latest"
