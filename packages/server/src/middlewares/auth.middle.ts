@@ -16,7 +16,7 @@ export async function isAuthenticated(
         const isValidSID = await sessionStorage.hasItem(sid);
 
         if (!sid || !isValidSID) {
-            return res.status(EServerResponseCodes.UNAUTHORIZED).json({
+            return res.status(EServerResponseCodes.FORBIDDEN).json({
                 rescode: EServerResponseRescodes.ERROR,
                 message: "Please login to continue",
                 error: "User not logged in",

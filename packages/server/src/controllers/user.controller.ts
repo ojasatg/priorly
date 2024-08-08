@@ -20,10 +20,10 @@ export async function edit(req: Request, res: Response) {
     if (!todoId) {
         // todo: if not logged in send not authorised
         // todo: this kind of check should be in a middleware
-        return res.status(EServerResponseCodes.UNAUTHORIZED).json({
+        return res.status(EServerResponseCodes.FORBIDDEN).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Please log in to continue",
-            error: "Unauthorised",
+            error: "Forbidden",
         });
     }
 
@@ -112,7 +112,7 @@ export async function edit(req: Request, res: Response) {
 //     if (!todoId) {
 //         // todo: if not logged in send not authorised
 //         // todo: this kind of check should be in a middleware
-//         return res.status(EServerResponseCodes.UNAUTHORIZED).json({
+//         return res.status(EServerResponseCodes.FORBIDDEN).json({
 //             rescode: EServerResponseRescodes.ERROR,
 //             message: "Please log in to continue",
 //             error: "Unauthorised",

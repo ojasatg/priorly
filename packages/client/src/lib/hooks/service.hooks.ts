@@ -55,9 +55,12 @@ async function createService<TData>({
             const _raw = response._data;
 
             switch (status) {
-                case EServerResponseCodes.UNAUTHORIZED:
+                case EServerResponseCodes.FORBIDDEN:
                     // handleAuthenticationError(...)
                     // if response has any error, show alert here, dont return anything
+                    break;
+                case EServerResponseCodes.UNAUTHORIZED:
+                    // doesn't have permission
                     break;
                 case EServerResponseCodes.INTERNAL_SERVER_ERROR:
                     alerts.error(
