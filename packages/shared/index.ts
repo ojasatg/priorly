@@ -1,7 +1,6 @@
 // utils
 export * from "./utils/datetime.utils";
 export * from "./utils/validation.utils";
-export * from "./utils/formatters.utils";
 
 // schemas
 export * from "./schemas/requests.schemas";

@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default [
     {
-        files: ["**/*.{js,mjs,cjs,ts,svelte}"],
+        files: ["**/*.{js,mjs,cjs,ts}"],
     },
     {
         languageOptions: {

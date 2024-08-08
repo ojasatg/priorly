@@ -4,33 +4,13 @@
     "type": "module",
     "scripts": {
         "dev": "bun --filter './packages/**/*' dev",
-        "format": "prettier --write .",
-        "lint": "bunx tsc --noEmit && eslint .",
-        "lint:fix": "eslint --fix .",
+        "format": "bun --filter './packages/**/*' format",
+        "lint": "bun --filter './packages/**/*' lint",
+        "lint:fix": "bun --filter './packages/**/*' lint:fix",
         "clean": "rm -rf node_modules",
-        "clean:all": "bun --filter './packages/**/*' clean"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.8.0",
-        "@types/bun": "^1.1.6",
-        "@types/lodash": "^4.17.7",
-        "@typescript-eslint/eslint-plugin": "^7.17.0",
-        "@typescript-eslint/parser": "^7.17.0",
-        "eslint": "9.x",
-        "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-prettier": "^5.2.1",
-        "globals": "^15.8.0",
-        "prettier": "^3.3.3",
-        "typescript-eslint": "^7.17.0"
-    },
-    "peerDependencies": {
-        "typescript": "^5.0.0"
+        "clean:all": "rm -rf node_modules &&  bun --filter './packages/**/*' clean"
     },
     "workspaces": [
         "packages/*"
-    ],
-    "dependencies": {
-        "lodash": "^4.17.21",
-        "zod": "^3.23.8"
-    }
+    ]
 }
