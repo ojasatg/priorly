@@ -1,5 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, type CallbackError } from "mongoose";
 import bcrypt from "bcrypt";
+import TodoModel from "./TodoModel";
 
 const UserSchema = new Schema(
     {
@@ -52,6 +53,18 @@ UserSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, salt); // hashes the password
 
     next();
+});
+
+UserSchema.pre("deleteOne", async function (next) {
+    // Before deleting the user, delete all its todos
+    try {
+        const userID = this.getFilter()._id;
+        await TodoModel.deleteMany({ user: userID });
+        next();
+    } catch (error) {
+        console.error(error);
+        next(error as CallbackError);
+    }
 });
 
 const UserModel = mongoose.model("Users", UserSchema);

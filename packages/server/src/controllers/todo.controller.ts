@@ -42,7 +42,11 @@ async function create(req: Request, res: Response) {
     }
 
     try {
-        const createdTodo = await TodoModel.create(reqTodo);
+        const userID = req.query.userID;
+        const createdTodo = await TodoModel.create({
+            ...reqTodo,
+            user: userID,
+        });
         const todo = CreateTodoResponseSchema.parse(createdTodo); // strips unnecessary keys
 
         return res.status(EServerResponseCodes.CREATED).json({
@@ -106,7 +110,7 @@ async function details(req: Request, res: Response) {
 async function all(req: Request, res: Response) {
     logURL(req);
 
-    console.log("userid from middleware: ", req.query.userID);
+    // console.log("userid from middleware: ", req.query.userID);
 
     try {
         AllTodosRequestSchema.parse(req.body);

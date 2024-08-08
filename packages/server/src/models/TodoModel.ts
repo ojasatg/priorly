@@ -18,7 +18,7 @@ const TodoSchema = new Schema(
         isImportant: { type: Boolean, required: false, default: false },
         isUrgent: { type: Boolean, required: false, default: false },
 
-        // user: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+        user: { type: Schema.Types.ObjectId, ref: "Users", required: true },
     },
     { timestamps: true },
 );
