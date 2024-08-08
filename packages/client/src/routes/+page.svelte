@@ -9,7 +9,7 @@
                 showAlerts: false,
                 requestData: {
                     name: "Ojaswi",
-                    email: "ojaswi@gmail.com",
+                    email: "ojaswi@yahoo.com",
                     password: "Ojaswi825@",
                     confirmPassword: "Ojaswi825@",
                 },
@@ -24,7 +24,7 @@
             await AuthService.login({
                 showAlerts: false,
                 requestData: {
-                    email: "ojaswi@gmail.com",
+                    email: "ojaswi@yahoo.com",
                     password: "Ojaswi825@",
                 },
             });
@@ -47,7 +47,7 @@
             const response = await TodoService.createTodo({
                 showAlerts: true,
                 requestData: {
-                    title: "New todo with user",
+                    title: "New todo with ojaswi yahoo",
                 },
             });
 

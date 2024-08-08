@@ -178,8 +178,6 @@ export async function remove(req: Request, res: Response) {
 
     const userID = req.query.userID as string; // taking id in query from the isAuthenticated middleware
 
-    console.log("User id: ", userID);
-
     try {
         await UserModel.findByIdAndDelete(userID);
 

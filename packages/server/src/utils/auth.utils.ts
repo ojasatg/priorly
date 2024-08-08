@@ -2,7 +2,10 @@ import { v4 as uuidv4 } from "uuid";
 import { sessionStorage } from "../storage";
 
 export async function setUserSession(userID: string) {
+    // todo: invalidate previous session for the same user id before issueing a new one.
+
     const newSessionID = uuidv4();
+
     await sessionStorage.setItem(newSessionID, userID);
     return newSessionID;
 }
