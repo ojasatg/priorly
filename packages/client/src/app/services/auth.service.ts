@@ -3,8 +3,9 @@ import { CreateUserRequestSchema, type TCreateUserRequestSchema } from "shared";
 
 import { useCreateService } from "$lib/hooks/service.hooks";
 import type { IPostAPIParams } from "$lib/types/api.types";
-import APIs from "$app/constants/api.consts";
 import { EAPIRequestMethod } from "$lib/constants/api.consts";
+
+import APIs from "$constants/api.consts";
 
 const authService = useCreateService();
 
