@@ -108,8 +108,12 @@ async function login(req: Request, res: Response) {
     }
 
     try {
-        const foundUser = await UserModel.findOne({ email: userDetails.email });
+        const { email, password } = userDetails;
+        const foundUser = await UserModel.findOne({ email: email });
+
         if (!_.isEmpty(foundUser)) {
+            // todo check for password
+
             const csrfToken = getNewCRSFToken();
             const sid = setUserSession(foundUser.id, csrfToken);
             res.cookie("sid", sid, {
