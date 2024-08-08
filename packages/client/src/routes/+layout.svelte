@@ -1,5 +1,7 @@
 <script>
     import "../app.css";
+
+    console.log("however")
 </script>
 
 <div class="app">
