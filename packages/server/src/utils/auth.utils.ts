@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { sessionStorage } from "../storage";
 
 export async function setUserSession(userID: string) {
-    const newSessionID = String(uuidv4());
+    const newSessionID = uuidv4();
     await sessionStorage.setItem(newSessionID, userID);
     return newSessionID;
 }

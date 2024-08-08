@@ -1,23 +1,47 @@
 import type { NextFunction, Request, Response } from "express";
+import { sessionStorage } from "../storage";
+import { EServerResponseCodes, EServerResponseRescodes } from "shared";
 
-export function isAuthenticated(
+import UserModel from "../models/UserModel";
+import _ from "lodash";
+
+export async function isAuthenticated(
     req: Request,
-    _res: Response,
+    res: Response,
     next: NextFunction,
 ) {
-    // check the session id (sid) from cookie
-    const sid = req.cookies.sid;
-    console.log("sid: ", sid);
+    try {
+        const sid = req.cookies.sid;
 
-    // if not session then not authenticated
+        const isValidSID = await sessionStorage.hasItem(sid);
 
-    // get the csrf token from header
+        if (!sid || !isValidSID) {
+            return res.status(EServerResponseCodes.UNAUTHORIZED).json({
+                rescode: EServerResponseRescodes.ERROR,
+                message: "Please login to continue",
+                error: "User not logged in",
+            });
+        } else {
+            const userID = (await sessionStorage.getItem(sid)) as string;
+            const user = await UserModel.findById(userID);
 
-    // if csrf token matches from the header then authenticated, else not authenticated
-
-    // if user not logged in, send unauthenticated error
-
-    // if user logged in, find user id from sessions table and pass the user id, sid, and csrf token
-
-    next();
+            if (!_.isEmpty(user)) {
+                req.query.userID = userID;
+                next();
+            } else {
+                return res.status(EServerResponseCodes.NOT_FOUND).json({
+                    rescode: EServerResponseRescodes.ERROR,
+                    message: "User not found",
+                    error: "Requested item does not exist",
+                });
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
+            rescode: EServerResponseRescodes.ERROR,
+            error: "Internal Server Error",
+            message: "Cannot establish user identity",
+        });
+    }
 }

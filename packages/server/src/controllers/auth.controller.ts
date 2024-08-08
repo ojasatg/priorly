@@ -49,7 +49,7 @@ async function signup(req: Request, res: Response) {
         const createdUser = await UserModel.create(userDetails);
         CreateUserResponseSchema.parse(createdUser); // strips unnecessary keys
 
-        const sid = setUserSession(createdUser.id);
+        const sid = await setUserSession(createdUser.id);
         return res
             .cookie("sid", sid, {
                 secure: true,
@@ -109,7 +109,8 @@ async function login(req: Request, res: Response) {
         if (!_.isEmpty(foundUser)) {
             // todo check for password
 
-            const sid = setUserSession(foundUser.id);
+            const sid = await setUserSession(foundUser.id);
+
             return res
                 .cookie("sid", sid, {
                     secure: true,
@@ -144,7 +145,7 @@ async function logout(req: Request, res: Response) {
     try {
         // todo: GET SID FROM THE next() function in the AUTH MIDDLEWARE.
         const sid = "";
-        invalidateSession(sid);
+        await invalidateSession(sid);
 
         res.cookie("sid", ""); // clear the auth cookie
         return res.status(EServerResponseCodes.OK).json({
