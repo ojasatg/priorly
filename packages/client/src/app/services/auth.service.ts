@@ -16,7 +16,7 @@ import APIs from "$constants/api.consts";
 
 const authService = useCreateService();
 
-export function signup({ showAlerts, requestData }: IPostAPIParams<TCreateUserRequestSchema>) {
+function signup({ showAlerts, requestData }: IPostAPIParams<TCreateUserRequestSchema>) {
     return authService({
         url: APIs.USER_SIGNUP,
         options: {
@@ -29,7 +29,7 @@ export function signup({ showAlerts, requestData }: IPostAPIParams<TCreateUserRe
     });
 }
 
-export function login({ showAlerts, requestData }: IPostAPIParams<TLoginUserRequestSchema>) {
+function login({ showAlerts, requestData }: IPostAPIParams<TLoginUserRequestSchema>) {
     return authService<TLoginUserResponseSchema>({
         url: APIs.USER_LOGIN,
         options: {
@@ -41,3 +41,10 @@ export function login({ showAlerts, requestData }: IPostAPIParams<TLoginUserRequ
         showAlerts,
     });
 }
+
+const AuthService = {
+    login,
+    signup,
+};
+
+export default AuthService;

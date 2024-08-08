@@ -3,9 +3,11 @@ import TodoRouter from "./todo.routes";
 import AuthRouter from "./auth.routes";
 import UserRouter from "./user.routes";
 
+import { isAuthenticated } from "../middlewares/auth.middle";
+
 const router = Router();
 
-router.use("/todo", TodoRouter);
+router.use("/todo", isAuthenticated, TodoRouter);
 router.use("/auth", AuthRouter);
 router.use("/user", UserRouter);
 

@@ -61,6 +61,7 @@ async function signup(req: Request, res: Response) {
             .json({
                 rescode: EServerResponseRescodes.SUCCESS,
                 message: "User signup successful",
+                data: {},
             });
     } catch (error) {
         const { code, errors } = getFormattedMongooseErrors(
@@ -120,6 +121,7 @@ async function login(req: Request, res: Response) {
                 .json({
                     rescode: EServerResponseRescodes.SUCCESS,
                     message: "User signup successful",
+                    data: {},
                 });
         } else {
             return res.status(EServerResponseCodes.NOT_FOUND).json({
@@ -146,13 +148,16 @@ async function logout(req: Request, res: Response) {
 
         res.cookie("sid", ""); // clear the auth cookie
         return res.status(EServerResponseCodes.OK).json({
+            rescode: EServerResponseRescodes.SUCCESS,
             message: "Logged out successfully",
+            data: {},
         });
     } catch (error) {
         console.error(error);
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to logout",
+            error: "Internal Server Error",
         });
     }
 }

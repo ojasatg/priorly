@@ -1,21 +1,20 @@
 import { v4 as uuidv4 } from "uuid";
+import { sessionStorage } from "../storage";
 
-const SESSIONS = new Map(); // todo: use cache or database for this
-
-export function setUserSession(userID: string) {
-    const newSessionID = uuidv4();
-    SESSIONS.set(newSessionID, userID);
+export async function setUserSession(userID: string) {
+    const newSessionID = String(uuidv4());
+    await sessionStorage.setItem(newSessionID, userID);
     return newSessionID;
 }
 
-export function getUserIDandTokenFromSession(sessionID: string) {
-    if (SESSIONS.has(sessionID)) {
-        return SESSIONS.get(sessionID);
+export async function getUserIDFromSession(sessionID: string) {
+    if (await sessionStorage.hasItem(sessionID)) {
+        return await sessionStorage.getItem(sessionID);
     } else {
         return null;
     }
 }
 
-export function invalidateSession(sessionID: string) {
-    SESSIONS.delete(sessionID);
+export async function invalidateSession(sessionID: string) {
+    await sessionStorage.removeItem(sessionID);
 }

@@ -13,7 +13,7 @@ import {
 
 const todoService = useCreateService();
 
-export function getAllTodos({ showAlerts, requestData }: IPostAPIParams<TAllTodosRequestSchema>) {
+function getAllTodos({ showAlerts, requestData }: IPostAPIParams<TAllTodosRequestSchema>) {
     return todoService<TAllTodosResponseSchema>({
         url: APIs.GET_ALL_TOODS,
         options: {
@@ -25,3 +25,9 @@ export function getAllTodos({ showAlerts, requestData }: IPostAPIParams<TAllTodo
         showAlerts: showAlerts,
     });
 }
+
+const TodoService = {
+    getAllTodos,
+};
+
+export default TodoService;

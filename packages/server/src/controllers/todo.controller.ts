@@ -106,6 +106,8 @@ async function details(req: Request, res: Response) {
 async function all(req: Request, res: Response) {
     logURL(req);
 
+    console.log("userid from middleware: ", req.body.userID);
+
     try {
         AllTodosRequestSchema.parse(req.body);
     } catch (error) {

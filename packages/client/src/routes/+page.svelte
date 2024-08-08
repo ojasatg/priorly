@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { login, signup } from "$services/auth.service";
-    import { getAllTodos } from "$services/todo.service";
+    import AuthService from "$services/auth.service";
+    import TodoService from "$services/todo.service";
 
     async function onSignup() {
-        await signup({
+        await AuthService.signup({
             showAlerts: false,
             requestData: {
                 name: "Ojaswi",
@@ -15,7 +15,7 @@
     }
 
     async function onLogin() {
-        await login({
+        await AuthService.login({
             showAlerts: false,
             requestData: {
                 email: "ojaswi@gmail.com",
@@ -25,7 +25,7 @@
     }
 
     async function fetchAllTodos() {
-        const response = await getAllTodos({ showAlerts: true, requestData: {} });
+        const response = await TodoService.getAllTodos({ showAlerts: true, requestData: {} });
         console.log(response?.todos);
     }
 </script>
