@@ -32,7 +32,9 @@ export type TTodoDetailsResponseSchema = z.infer<
 // Users
 
 export const CreateUserResponseSchema = z.object({
-    id: z.string(), // send token instead of id
+    data: z.object({
+        csrfToken: z.string(),
+    }),
 });
 
 export const EditUserResponseSchema = CreateUserResponseSchema;

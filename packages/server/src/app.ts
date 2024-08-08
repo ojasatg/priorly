@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(router);
+app.use("/api", router);
 
 const PORT = process.env.PORT || 3120;
 const MONGO_URI = String(process.env.MONGO_URI);
