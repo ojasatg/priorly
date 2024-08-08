@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { login, signup } from "../app/services/auth.service";
+    import { login, signup } from "$services/auth.service";
+    import { getAllTodos } from "$services/todo.service";
 
     async function onSignup() {
         await signup({
@@ -22,6 +23,10 @@
             },
         });
     }
+
+    async function fetchAllTodos() {
+        await getAllTodos({ showAlerts: true, requestData: {} });
+    }
 </script>
 
 <svelte:head>
@@ -33,4 +38,9 @@
     <p>This is our main page</p>
     <button on:click={onSignup}>Sign Up</button>
     <button on:click={onLogin}>Login</button>
+
+    <br />
+    <br />
+
+    <button on:click={fetchAllTodos}>Fetch All Todos</button>
 </section>

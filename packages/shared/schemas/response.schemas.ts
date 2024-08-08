@@ -21,6 +21,13 @@ export const TodoDetailsResponseSchema = CreateTodoResponseSchema.merge(
     }),
 );
 
+export const AllTodosResponseSchema = z.object({
+    data: z.object({
+        todos: z.array(TodoDetailsResponseSchema),
+        cursor: z.number(),
+    }),
+});
+
 export type TCreateTodoResponseSchema = z.infer<
     typeof CreateTodoResponseSchema
 >;
@@ -28,6 +35,8 @@ export type TCreateTodoResponseSchema = z.infer<
 export type TTodoDetailsResponseSchema = z.infer<
     typeof TodoDetailsResponseSchema
 >;
+
+export type TAllTodosResponseSchema = z.infer<typeof AllTodosResponseSchema>;
 
 // Users
 

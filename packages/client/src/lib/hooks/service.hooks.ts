@@ -13,10 +13,7 @@ import {
 
 import { EServerResponseCodes, EServerResponseRescodes } from "shared";
 
-import {
-    SuccessResponseSchema,
-    ErrorResponseSchema,
-} from "$lib/schemas/api.schemas";
+import { SuccessResponseSchema, ErrorResponseSchema } from "$lib/schemas/api.schemas";
 
 import { alerts } from "$lib/stores/AlertStore";
 
@@ -49,6 +46,7 @@ async function createService<TData>({
     const defaults: FetchOptions = {
         baseURL,
         timeout: 60000,
+        credentials: "include",
         // headers: {
         //     "X-Instance-Id": id,
         // },
@@ -64,32 +62,23 @@ async function createService<TData>({
                 case EServerResponseCodes.INTERNAL_SERVER_ERROR:
                     alerts.error(
                         _raw.message ??
-                            SERVICE_MESSAGES[
-                                EServiceMessageCodes.INTERNAL_SERVER_ERROR
-                            ],
+                            SERVICE_MESSAGES[EServiceMessageCodes.INTERNAL_SERVER_ERROR],
                     );
                     break;
                 case EServerResponseCodes.NOT_FOUND:
                     alerts.error(
-                        _raw.message ??
-                            SERVICE_MESSAGES[
-                                EServiceMessageCodes.ITEM_NOT_EXISTS
-                            ],
+                        _raw.message ?? SERVICE_MESSAGES[EServiceMessageCodes.ITEM_NOT_EXISTS],
                     );
                     break;
                 case EServerResponseCodes.BAD_REQUEST:
                     alerts.error(
-                        _raw.message ??
-                            SERVICE_MESSAGES[EServiceMessageCodes.BAD_REQUEST],
+                        _raw.message ?? SERVICE_MESSAGES[EServiceMessageCodes.BAD_REQUEST],
                     );
                     break;
 
                 default:
                     alerts.error(
-                        _raw.message ??
-                            SERVICE_MESSAGES[
-                                EServiceMessageCodes.UNKNOWN_ERROR
-                            ],
+                        _raw.message ?? SERVICE_MESSAGES[EServiceMessageCodes.UNKNOWN_ERROR],
                     );
             }
         },
@@ -106,11 +95,7 @@ async function createService<TData>({
         } catch (error) {
             console.error(error);
             if (showAlerts) {
-                alerts.error(
-                    SERVICE_MESSAGES[
-                        EServiceMessageCodes.REQUEST_VALIDATION_FAILED
-                    ],
-                );
+                alerts.error(SERVICE_MESSAGES[EServiceMessageCodes.REQUEST_VALIDATION_FAILED]);
             }
             throw new Error(EServiceMessageCodes.REQUEST_VALIDATION_FAILED);
         }
@@ -127,11 +112,7 @@ async function createService<TData>({
             } catch (error) {
                 console.error(error);
                 if (showAlerts) {
-                    alerts.error(
-                        SERVICE_MESSAGES[
-                            EServiceMessageCodes.QUERY_VALIDATION_FAILED
-                        ],
-                    );
+                    alerts.error(SERVICE_MESSAGES[EServiceMessageCodes.QUERY_VALIDATION_FAILED]);
                 }
                 throw new Error(EServiceMessageCodes.QUERY_VALIDATION_FAILED);
             }
@@ -170,11 +151,7 @@ async function createService<TData>({
             // throw error when validation fails
             console.error(error);
             if (showAlerts) {
-                alerts.error(
-                    SERVICE_MESSAGES[
-                        EServiceMessageCodes.RESPONSE_VALIDATION_FAILED
-                    ],
-                );
+                alerts.error(SERVICE_MESSAGES[EServiceMessageCodes.RESPONSE_VALIDATION_FAILED]);
             }
             throw new Error(EServiceMessageCodes.RESPONSE_VALIDATION_FAILED);
         }
@@ -192,11 +169,7 @@ async function createService<TData>({
         } else {
             // else we show a predifined message and throw error for the caller.
             if (showAlerts) {
-                alerts.error(
-                    SERVICE_MESSAGES[
-                        EServiceMessageCodes.ERROR_VALIDATION_FAILED
-                    ],
-                );
+                alerts.error(SERVICE_MESSAGES[EServiceMessageCodes.ERROR_VALIDATION_FAILED]);
             }
             console.error(EServiceMessageCodes.ERROR_VALIDATION_FAILED);
             throw new Error(EServiceMessageCodes.ERROR_VALIDATION_FAILED);

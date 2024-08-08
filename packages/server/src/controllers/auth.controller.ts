@@ -55,19 +55,21 @@ async function signup(req: Request, res: Response) {
 
         const csrfToken = getNewCRSFToken();
         const sid = setUserSession(createdUser.id, csrfToken);
-        res.cookie("sid", sid, {
-            httpOnly: true,
-            secure: true,
-            maxAge: 3 * 24 * 60 * 60,
-        }); // expires in 3 days
-
-        return res.status(EServerResponseCodes.CREATED).json({
-            rescode: EServerResponseRescodes.SUCCESS,
-            message: "User signup successful",
-            data: {
-                csrfToken,
-            },
-        });
+        return res
+            .cookie("sid", sid, {
+                secure: true,
+                httpOnly: true,
+                maxAge: 3 * 24 * 60 * 60, // expires in 3 days
+                sameSite: "none",
+            })
+            .status(EServerResponseCodes.CREATED)
+            .json({
+                rescode: EServerResponseRescodes.SUCCESS,
+                message: "User signup successful",
+                data: {
+                    csrfToken,
+                },
+            });
     } catch (error) {
         const { code, errors } = getFormattedMongooseErrors(
             error as TMongooseError,
@@ -116,18 +118,21 @@ async function login(req: Request, res: Response) {
 
             const csrfToken = getNewCRSFToken();
             const sid = setUserSession(foundUser.id, csrfToken);
-            res.cookie("sid", sid, {
-                httpOnly: true,
-                maxAge: 3 * 24 * 60 * 60,
-            }); // expires in 3 days
-
-            return res.status(EServerResponseCodes.CREATED).json({
-                rescode: EServerResponseRescodes.SUCCESS,
-                message: "User logged in succesfully",
-                data: {
-                    csrfToken,
-                },
-            });
+            return res
+                .cookie("sid", sid, {
+                    secure: true,
+                    httpOnly: true,
+                    maxAge: 3 * 24 * 60 * 60, // expires in 3 days
+                    sameSite: "none",
+                })
+                .status(EServerResponseCodes.OK)
+                .json({
+                    rescode: EServerResponseRescodes.SUCCESS,
+                    message: "User signup successful",
+                    data: {
+                        csrfToken,
+                    },
+                });
         } else {
             return res.status(EServerResponseCodes.NOT_FOUND).json({
                 rescode: EServerResponseRescodes.ERROR,
