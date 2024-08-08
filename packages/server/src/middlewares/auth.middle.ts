@@ -1,13 +1,19 @@
 import type { NextFunction, Request, Response } from "express";
 
 export function isAuthenticated(
-    _req: Request,
+    req: Request,
     _res: Response,
     next: NextFunction,
 ) {
     // check the session id (sid) from cookie
+    const sid = req.cookies.sid;
+    console.log("sid: ", sid);
+
+    // if not session then not authenticated
 
     // get the csrf token from header
+
+    // if csrf token matches from the header then authenticated, else not authenticated
 
     // if user not logged in, send unauthenticated error
 

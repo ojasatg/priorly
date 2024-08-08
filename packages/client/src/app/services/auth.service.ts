@@ -5,6 +5,7 @@ import {
     LoginUserResponseSchema,
     type TCreateUserRequestSchema,
     type TLoginUserRequestSchema,
+    type TLoginUserResponseSchema,
 } from "shared";
 
 import { useCreateService } from "$lib/hooks/service.hooks";
@@ -29,7 +30,7 @@ export function signup({ showAlerts, requestData }: IPostAPIParams<TCreateUserRe
 }
 
 export function login({ showAlerts, requestData }: IPostAPIParams<TLoginUserRequestSchema>) {
-    return authService({
+    return authService<TLoginUserResponseSchema>({
         url: APIs.USER_LOGIN,
         options: {
             method: EAPIRequestMethod.POST,

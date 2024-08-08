@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from "uuid";
 
 const SESSIONS = new Map(); // todo: use cache or database for this
 
-export function setUserSession(userID: string, csrfToken: string) {
+export function setUserSession(userID: string) {
     const newSessionID = uuidv4();
-    SESSIONS.set(newSessionID, { userID, csrfToken });
+    SESSIONS.set(newSessionID, userID);
     return newSessionID;
 }
 
@@ -18,9 +18,4 @@ export function getUserIDandTokenFromSession(sessionID: string) {
 
 export function invalidateSession(sessionID: string) {
     SESSIONS.delete(sessionID);
-}
-
-export function getNewCRSFToken() {
-    const token = uuidv4();
-    return token;
 }

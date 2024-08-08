@@ -25,7 +25,8 @@
     }
 
     async function fetchAllTodos() {
-        await getAllTodos({ showAlerts: true, requestData: {} });
+        const response = await getAllTodos({ showAlerts: true, requestData: {} });
+        console.log(response?.todos);
     }
 </script>
 

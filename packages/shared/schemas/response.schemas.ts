@@ -22,10 +22,8 @@ export const TodoDetailsResponseSchema = CreateTodoResponseSchema.merge(
 );
 
 export const AllTodosResponseSchema = z.object({
-    data: z.object({
-        todos: z.array(TodoDetailsResponseSchema),
-        cursor: z.number(),
-    }),
+    todos: z.array(TodoDetailsResponseSchema),
+    cursor: z.number(),
 });
 
 export type TCreateTodoResponseSchema = z.infer<
@@ -40,11 +38,7 @@ export type TAllTodosResponseSchema = z.infer<typeof AllTodosResponseSchema>;
 
 // Users
 
-export const CreateUserResponseSchema = z.object({
-    data: z.object({
-        csrfToken: z.string(),
-    }),
-});
+export const CreateUserResponseSchema = z.object({});
 
 export const LoginUserResponseSchema = CreateUserResponseSchema;
 export const EditUserResponseSchema = CreateUserResponseSchema;

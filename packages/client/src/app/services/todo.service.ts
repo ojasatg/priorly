@@ -4,12 +4,17 @@ import type { IPostAPIParams } from "$lib/types/api.types";
 
 import APIs from "$constants/api.consts";
 
-import { AllTodosRequestSchema, AllTodosResponseSchema, type TAllTodosRequestSchema } from "shared";
+import {
+    AllTodosRequestSchema,
+    AllTodosResponseSchema,
+    type TAllTodosRequestSchema,
+    type TAllTodosResponseSchema,
+} from "shared";
 
 const todoService = useCreateService();
 
 export function getAllTodos({ showAlerts, requestData }: IPostAPIParams<TAllTodosRequestSchema>) {
-    return todoService({
+    return todoService<TAllTodosResponseSchema>({
         url: APIs.GET_ALL_TOODS,
         options: {
             method: EAPIRequestMethod.POST,

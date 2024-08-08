@@ -14,11 +14,7 @@ import {
 } from "shared";
 
 import UserModel from "../models/UserModel";
-import {
-    invalidateSession,
-    setUserSession,
-    getNewCRSFToken,
-} from "../utils/auth.utils";
+import { invalidateSession, setUserSession } from "../utils/auth.utils";
 import { logURL } from "../utils/logger.utils";
 
 // Signup actually creates the user so it has to be here
@@ -53,22 +49,18 @@ async function signup(req: Request, res: Response) {
         const createdUser = await UserModel.create(userDetails);
         CreateUserResponseSchema.parse(createdUser); // strips unnecessary keys
 
-        const csrfToken = getNewCRSFToken();
-        const sid = setUserSession(createdUser.id, csrfToken);
+        const sid = setUserSession(createdUser.id);
         return res
             .cookie("sid", sid, {
                 secure: true,
                 httpOnly: true,
                 maxAge: 3 * 24 * 60 * 60, // expires in 3 days
-                sameSite: "none",
+                sameSite: "strict",
             })
             .status(EServerResponseCodes.CREATED)
             .json({
                 rescode: EServerResponseRescodes.SUCCESS,
                 message: "User signup successful",
-                data: {
-                    csrfToken,
-                },
             });
     } catch (error) {
         const { code, errors } = getFormattedMongooseErrors(
@@ -116,22 +108,18 @@ async function login(req: Request, res: Response) {
         if (!_.isEmpty(foundUser)) {
             // todo check for password
 
-            const csrfToken = getNewCRSFToken();
-            const sid = setUserSession(foundUser.id, csrfToken);
+            const sid = setUserSession(foundUser.id);
             return res
                 .cookie("sid", sid, {
                     secure: true,
                     httpOnly: true,
                     maxAge: 3 * 24 * 60 * 60, // expires in 3 days
-                    sameSite: "none",
+                    sameSite: "strict",
                 })
                 .status(EServerResponseCodes.OK)
                 .json({
                     rescode: EServerResponseRescodes.SUCCESS,
                     message: "User signup successful",
-                    data: {
-                        csrfToken,
-                    },
                 });
         } else {
             return res.status(EServerResponseCodes.NOT_FOUND).json({
