@@ -11,8 +11,9 @@ How to start - start.sh
 2. Start the client on the build machine
 
 Todos
-- Change password
 - Forgot password
+- OAuth
+- Email verification for creating user and updating email
 - Remove unnecessary types
 
 
