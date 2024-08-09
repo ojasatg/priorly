@@ -66,7 +66,7 @@ export async function edit(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unknown error occured, please try again later",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 
@@ -99,7 +99,7 @@ export async function edit(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to update the user information",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
@@ -126,7 +126,7 @@ export async function remove(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unknown error occured, please try again later",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }

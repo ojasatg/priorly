@@ -71,7 +71,7 @@ async function signup(req: Request, res: Response) {
         return res.status(code).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to signup",
-            error: "Internal Server Error",
+            error: "Internal server error",
             errors,
         });
     }
@@ -135,7 +135,7 @@ async function login(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to login",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
@@ -157,7 +157,7 @@ async function logout(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to logout",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }

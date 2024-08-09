@@ -62,7 +62,7 @@ async function create(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to add todo",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
@@ -103,7 +103,7 @@ async function details(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to fetch the todo details",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
@@ -154,7 +154,7 @@ async function all(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to fetch todos",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
@@ -243,7 +243,7 @@ async function edit(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to update the todo details",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 
@@ -274,7 +274,7 @@ async function edit(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to update the todo details",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
@@ -313,7 +313,7 @@ async function remove(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to delete the todo",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
@@ -351,7 +351,7 @@ async function count(req: Request, res: Response) {
         return res.status(EServerResponseCodes.INTERNAL_SERVER_ERROR).json({
             rescode: EServerResponseRescodes.ERROR,
             message: "Unable to fetch todos",
-            error: "Internal Server Error",
+            error: "Internal server error",
         });
     }
 }
