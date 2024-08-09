@@ -6,3 +6,9 @@ export const sessionStorage = createStorage({
         max: 100, // Keep a max of 100 items in LRU Cache
     }),
 });
+
+export const userSessionMap = createStorage({
+    driver: lruCacheDriver({
+        max: 100, // Keep a max of 100 items in LRU Cache
+    }),
+});
