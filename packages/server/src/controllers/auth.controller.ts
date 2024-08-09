@@ -57,10 +57,12 @@ async function signup(req: Request, res: Response) {
     try {
         delete userDetails.confirmPassword;
 
+        // todo: embed received user details in jwt and send the token
+
         sendMail({
             emailTo: userDetails.email,
-            subject: "Test Email by Ojaswi",
-            textBody: "Test body ofcourse!",
+            subject: "Welcome to Priorly!",
+            templateFileName: "signup",
         })
             .then(() => {
                 console.info(

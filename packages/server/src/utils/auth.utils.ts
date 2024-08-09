@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
 import { sessionStorage, userSessionMap, mailTransporter } from "../tools";
-import type { MailOptions } from "nodemailer/lib/json-transport";
 
 async function invalidateSessionInBothMap(userID: string, sessionID: string) {
     const hasSession = (await sessionStorage.hasItem(sessionID)) as boolean;
@@ -51,8 +50,8 @@ export async function getUserIDFromSession(sessionID: string) {
 interface IGenerateMailOptionsParams {
     emailTo: string;
     subject: string;
-    textBody?: string;
-    htmlBody?: string;
+    templateFileName: string;
+    htmlFileClickLink?: string;
 }
 
 export async function sendMail(options: IGenerateMailOptionsParams) {
@@ -63,12 +62,11 @@ export async function sendMail(options: IGenerateMailOptionsParams) {
 
     const APP_EMAIL = String(process.env.SMTP_MAIL);
 
-    const mailOptions: MailOptions = {
+    const mailOptions = {
         from: APP_EMAIL,
         to: options.emailTo,
         subject: options.subject,
-        text: options.textBody,
-        html: options.htmlBody,
+        template: options.templateFileName,
     };
 
     // make this a promise request so that this function doesn't blocks the main thread of execution

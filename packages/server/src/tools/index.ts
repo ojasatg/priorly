@@ -1,6 +1,8 @@
 import { createStorage } from "unstorage";
 import lruCacheDriver from "unstorage/drivers/lru-cache";
 import nodemailer from "nodemailer";
+import hbs from "nodemailer-express-handlebars";
+import type { NodemailerExpressHandlebarsOptions } from "nodemailer-express-handlebars";
 
 export const sessionStorage = createStorage({
     driver: lruCacheDriver({
@@ -14,10 +16,19 @@ export const userSessionMap = createStorage({
     }),
 });
 
-export const mailTransporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: String(process.env.SMTP_MAIL),
-        pass: String(process.env.SMTP_PASS),
+const hbsOptions: NodemailerExpressHandlebarsOptions = {
+    viewEngine: {
+        defaultLayout: false,
     },
-});
+    viewPath: "../server/src/assets/templates/emails",
+};
+
+export const mailTransporter = nodemailer
+    .createTransport({
+        service: "gmail",
+        auth: {
+            user: String(process.env.SMTP_MAIL),
+            pass: String(process.env.SMTP_PASS),
+        },
+    })
+    .use("compile", hbs(hbsOptions));
