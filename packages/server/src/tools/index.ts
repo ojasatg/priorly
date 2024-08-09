@@ -18,7 +18,7 @@ export const userSessionMap = createStorage({
 
 const hbsOptions: NodemailerExpressHandlebarsOptions = {
     viewEngine: {
-        defaultLayout: false,
+        defaultLayout: false as unknown as string,
     },
     viewPath: "../server/src/assets/templates/emails",
 };
