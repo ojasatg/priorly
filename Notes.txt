@@ -13,6 +13,7 @@ How to start - start.sh
 Todos
 - Change password
 - Forgot password
+- Remove unnecessary types
 
 
 Start server and client separately just like you do in the dev machine.

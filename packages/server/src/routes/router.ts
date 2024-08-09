@@ -7,8 +7,8 @@ import { isAuthenticated } from "../middlewares/auth.middle";
 
 const router = Router();
 
-router.use("/todo", isAuthenticated, TodoRouter);
 router.use("/auth", AuthRouter);
 router.use("/user", isAuthenticated, UserRouter);
+router.use("/todo", isAuthenticated, TodoRouter);
 
 export default router;

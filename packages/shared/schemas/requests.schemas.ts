@@ -91,13 +91,12 @@ const userPasswordSchema = z
 
 const userNameSchema = z
     .string()
-    .max(40, "Name cannot be more that 40 characters long")
-    .nullish();
+    .max(40, "Name cannot be more that 40 characters long");
 
 // Request Users
 export const CreateUserRequestSchema = z
     .object({
-        name: userNameSchema,
+        name: userNameSchema.nullish(),
         email: userEmailSchema,
         password: userPasswordSchema,
         confirmPassword: z.string({
@@ -112,16 +111,26 @@ export const CreateUserRequestSchema = z
 
 export const EditUserRequestSchema = z.object({
     changes: z.object({
-        email: userEmailSchema.nullish(),
         name: userNameSchema.nullish(),
     }),
 });
 
-export const DeleteUserRequestSchema = z.object({});
+export const ChangeUserPasswordSchema = z
+    .object({
+        currentPassword: z.string(), // of course this is regex validated already
+        newPassword: userPasswordSchema,
+        confirmNewPassowrd: z.string(),
+    })
+    .refine((data) => data.currentPassword === data.confirmNewPassowrd, {
+        message: "Passwords do not match",
+        path: ["confirmNewPassowrd"],
+    });
 
 export type TCreateUserRequestSchema = z.infer<typeof CreateUserRequestSchema>;
 export type TEditUserRequestSchema = z.infer<typeof EditUserRequestSchema>;
-export type TDeleteUserRequestSchema = z.infer<typeof DeleteUserRequestSchema>;
+export type TChangeUserPasswordSchema = z.infer<
+    typeof ChangeUserPasswordSchema
+>;
 
 // Request Auth
 export const LoginUserRequestSchema = z.object({

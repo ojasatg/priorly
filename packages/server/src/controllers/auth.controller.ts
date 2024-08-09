@@ -4,7 +4,6 @@ import _ from "lodash";
 import type { ZodError } from "zod";
 
 import {
-    CreateUserResponseSchema,
     CreateUserRequestSchema,
     EServerResponseCodes,
     EServerResponseRescodes,
@@ -25,7 +24,6 @@ const AUTH_COOKIE: CookieOptions = {
     sameSite: "strict",
 };
 
-// Signup actually creates the user so it has to be here
 async function signup(req: Request, res: Response) {
     logURL(req);
     let userDetails = req.body;
@@ -55,7 +53,6 @@ async function signup(req: Request, res: Response) {
         delete userDetails.confirmPassword;
 
         const createdUser = await UserModel.create(userDetails);
-        CreateUserResponseSchema.parse(createdUser); // strips unnecessary keys
 
         const sid = await setUserSession(createdUser.id);
         return res

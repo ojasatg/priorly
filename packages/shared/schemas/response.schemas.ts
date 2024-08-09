@@ -31,11 +31,9 @@ export type TTodoDetailsResponseSchema = z.infer<
 export type TAllTodosResponseSchema = z.infer<typeof AllTodosResponseSchema>;
 
 // Users and Auth
-export const CreateUserResponseSchema = z.object({});
-export const EditUserResponseSchema = CreateUserResponseSchema;
-
-export type TCreateUserResponseSchema = z.infer<
-    typeof CreateUserResponseSchema
->;
+export const EditUserResponseSchema = z.object({
+    name: z.string(),
+    email: z.string(),
+});
 
 export type TEditUserResponseSchema = z.infer<typeof EditUserResponseSchema>;

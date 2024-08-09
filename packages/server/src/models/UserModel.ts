@@ -1,4 +1,8 @@
-import mongoose, { Schema, type CallbackError } from "mongoose";
+import mongoose, {
+    Schema,
+    type CallbackError,
+    type MongooseUpdateQueryOptions,
+} from "mongoose";
 import bcrypt from "bcrypt";
 import TodoModel from "./TodoModel";
 
@@ -51,6 +55,24 @@ UserSchema.pre("save", async function (next) {
 
     const salt = await bcrypt.genSalt(); // generates a salt
     this.password = await bcrypt.hash(this.password, salt); // hashes the password
+
+    next();
+});
+
+UserSchema.pre("findOneAndUpdate", async function (next) {
+    type TPasswordUpdate = MongooseUpdateQueryOptions<{
+        password: string;
+    }>;
+    const updates = this.getUpdate() as TPasswordUpdate | null;
+    const password = updates?.password;
+
+    if (password) {
+        const salt = await bcrypt.genSalt(); // generates a salt
+        (this.getUpdate() as TPasswordUpdate).password = await bcrypt.hash(
+            password,
+            salt,
+        ); // hashes the password
+    }
 
     next();
 });

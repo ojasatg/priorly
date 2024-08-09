@@ -253,13 +253,7 @@ async function edit(req: Request, res: Response) {
             { $set: updates },
             { new: true }, // returns the updated todo otherwise old todo
         );
-        if (_.isEmpty(updatedTodo)) {
-            return res.status(EServerResponseCodes.NOT_FOUND).json({
-                rescode: EServerResponseRescodes.ERROR,
-                message: "Unable to delete the todo",
-                error: "Requested item does not exist",
-            });
-        } else {
+        if (!_.isEmpty(updatedTodo)) {
             const todo = TodoDetailsResponseSchema.parse(updatedTodo);
             return res.status(EServerResponseCodes.OK).json({
                 rescode: EServerResponseRescodes.SUCCESS,
@@ -267,6 +261,12 @@ async function edit(req: Request, res: Response) {
                 data: {
                     todo: todo,
                 },
+            });
+        } else {
+            return res.status(EServerResponseCodes.NOT_FOUND).json({
+                rescode: EServerResponseRescodes.ERROR,
+                message: "Unable to delete the todo",
+                error: "Requested item does not exist",
             });
         }
     } catch (error) {
