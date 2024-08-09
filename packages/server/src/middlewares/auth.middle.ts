@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import _ from "lodash";
 
-import { sessionStorage } from "../storage";
+import { sessionStorage } from "../tools";
 import { EServerResponseCodes, EServerResponseRescodes } from "shared";
 
 import UserModel from "../models/UserModel";

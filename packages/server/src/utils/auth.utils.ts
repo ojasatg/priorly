@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { sessionStorage, userSessionMap } from "../storage";
+
+import { sessionStorage, userSessionMap, mailTransporter } from "../tools";
+import type { MailOptions } from "nodemailer/lib/json-transport";
 
 async function invalidateSessionInBothMap(userID: string, sessionID: string) {
     const hasSession = (await sessionStorage.hasItem(sessionID)) as boolean;
@@ -46,6 +48,29 @@ export async function getUserIDFromSession(sessionID: string) {
     }
 }
 
-export async function sendMail() {
-    // used by signup, forgot password
+interface IGenerateMailOptionsParams {
+    emailTo: string;
+    subject: string;
+    textBody?: string;
+    htmlBody?: string;
+}
+
+export async function sendMail(options: IGenerateMailOptionsParams) {
+    // used for - email confirmation during signup and email changing
+    // used for - forgot password and when user changes password with/without forgetting
+    // used for - when user changes his her email (send to both new and old email)
+    // used for - thanking when account created, account deletion
+
+    const APP_EMAIL = String(process.env.SMTP_MAIL);
+
+    const mailOptions: MailOptions = {
+        from: APP_EMAIL,
+        to: options.emailTo,
+        subject: options.subject,
+        text: options.textBody,
+        html: options.htmlBody,
+    };
+
+    // make this a promise request so that this function doesn't blocks the main thread of execution
+    mailTransporter.sendMail(mailOptions);
 }

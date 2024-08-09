@@ -11,10 +11,15 @@ import {
     getFormattedMongooseErrors,
     type TMongooseError,
     LoginUserRequestSchema,
+    type TCreateUserRequestSchema,
 } from "shared";
 
 import UserModel from "../models/UserModel";
-import { invalidateSession, setUserSession } from "../utils/auth.utils";
+import {
+    invalidateSession,
+    sendMail,
+    setUserSession,
+} from "../utils/auth.utils";
 import { logURL } from "../utils/logger.utils";
 
 const AUTH_COOKIE: CookieOptions = {
@@ -52,16 +57,27 @@ async function signup(req: Request, res: Response) {
     try {
         delete userDetails.confirmPassword;
 
-        const createdUser = await UserModel.create(userDetails);
-
-        const sid = await setUserSession(createdUser.id);
-        return res
-            .cookie("sid", sid, AUTH_COOKIE)
-            .status(EServerResponseCodes.CREATED)
-            .json({
-                rescode: EServerResponseRescodes.SUCCESS,
-                message: "User signup successful",
+        sendMail({
+            emailTo: userDetails.email,
+            subject: "Test Email by Ojaswi",
+            textBody: "Test body ofcourse!",
+        })
+            .then(() => {
+                console.info(
+                    `Auth/Signup: Mail sent successfuly to ${userDetails.email}`,
+                );
+            })
+            .catch((error) => {
+                console.error(
+                    `Auth/Signup: Failed to send mail to ${userDetails.email}`,
+                );
+                console.error(error);
             });
+
+        return res.status(EServerResponseCodes.OK).json({
+            rescode: EServerResponseRescodes.SUCCESS,
+            message: "Verification mail sent, please check your email",
+        });
     } catch (error) {
         const { code, errors } = getFormattedMongooseErrors(
             error as TMongooseError,
@@ -165,17 +181,19 @@ async function logout(req: Request, res: Response) {
     }
 }
 
-async function confirmMail(req: Request, res: Response) {}
+async function changeEmail(req: Request, res: Response) {}
+
 async function forgotPassword(req: Request, res: Response) {}
-async function changePassowrd(req: Request, res: Response) {}
+
+async function confirmMail(req: Request, res: Response) {}
 
 const AuthController = {
     signup,
     login,
     logout,
-    confirmMail,
+    changeEmail,
     forgotPassword,
-    changePassowrd,
+    confirmMail,
 };
 
 export default AuthController;

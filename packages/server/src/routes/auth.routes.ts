@@ -10,8 +10,9 @@ router.post("/signup", AuthController.signup);
 router.post("/login", AuthController.login);
 router.get("/logout", isAuthenticated, AuthController.logout);
 
-router.get("/confirm", AuthController.confirmMail); // user email parameter embedded in jwt
-router.get("/forgot", AuthController.forgotPassword); // sends mail that redirects to change password page
-router.post("/passwd", AuthController.changePassowrd);
+router.get("/forgot", AuthController.forgotPassword); // sends mail that redirects to change password page and email
+router.post("/email", AuthController.changeEmail); // sends mail for verification with user old email and new email embedded on jwt
+
+router.get("/confirm", AuthController.confirmMail); // user old email parameter embedded in jwt
 
 export default router;

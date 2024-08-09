@@ -9,7 +9,7 @@
                 showAlerts: false,
                 requestData: {
                     name: "Ojaswi",
-                    email: "ojaswi@gmail.com",
+                    email: "bisifo7382@eixdeal.com",
                     password: "Ojaswi825@",
                     confirmPassword: "Ojaswi825@",
                 },
@@ -24,7 +24,7 @@
             await AuthService.login({
                 showAlerts: false,
                 requestData: {
-                    email: "ojaswi@gmail.com",
+                    email: "bisifo7382@eixdeal.com",
                     password: "Ojaswi825@",
                 },
             });
