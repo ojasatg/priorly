@@ -37,9 +37,20 @@ function login({ showAlerts, requestData }: IPostAPIParams<TLoginUserRequestSche
     });
 }
 
+function logout({ showAlerts }: IPostAPIParams) {
+    return authService({
+        url: APIs.USER_LOGOUT,
+        options: {
+            method: EAPIRequestMethod.GET,
+        },
+        showAlerts,
+    });
+}
+
 const AuthService = {
-    login,
     signup,
+    login,
+    logout,
 };
 
 export default AuthService;

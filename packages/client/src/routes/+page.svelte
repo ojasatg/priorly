@@ -61,10 +61,20 @@
         try {
             await UserService.deleteUser({
                 showAlerts: true,
-                requestData: {},
             });
 
             console.log("user deleted successfully");
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function onLogout() {
+        try {
+            await AuthService.logout({
+                showAlerts: true,
+            });
+            console.log("user logged out successfully");
         } catch (error) {
             console.error(error);
         }
@@ -90,5 +100,6 @@
     <br />
     <br />
 
+    <button on:click={onLogout}>Logout User</button>
     <button on:click={onDeleteUser}>Delete User</button>
 </section>
