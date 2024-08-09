@@ -45,3 +45,7 @@ export async function getUserIDFromSession(sessionID: string) {
         return null;
     }
 }
+
+export async function sendMail() {
+    // used by signup, forgot password
+}

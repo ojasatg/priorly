@@ -165,10 +165,17 @@ async function logout(req: Request, res: Response) {
     }
 }
 
+async function confirmMail(req: Request, res: Response) {}
+async function forgotPassword(req: Request, res: Response) {}
+async function changePassowrd(req: Request, res: Response) {}
+
 const AuthController = {
     signup,
     login,
     logout,
+    confirmMail,
+    forgotPassword,
+    changePassowrd,
 };
 
 export default AuthController;
