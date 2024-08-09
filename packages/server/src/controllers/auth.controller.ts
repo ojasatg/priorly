@@ -1,4 +1,5 @@
-import type { Request, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
+import bcrypt from "bcrypt";
 import _ from "lodash";
 import type { ZodError } from "zod";
 
@@ -16,6 +17,13 @@ import {
 import UserModel from "../models/UserModel";
 import { invalidateSession, setUserSession } from "../utils/auth.utils";
 import { logURL } from "../utils/logger.utils";
+
+const AUTH_COOKIE: CookieOptions = {
+    secure: true,
+    httpOnly: true,
+    maxAge: 3 * 24 * 60 * 60, // expires in 3 days
+    sameSite: "strict",
+};
 
 // Signup actually creates the user so it has to be here
 async function signup(req: Request, res: Response) {
@@ -51,12 +59,7 @@ async function signup(req: Request, res: Response) {
 
         const sid = await setUserSession(createdUser.id);
         return res
-            .cookie("sid", sid, {
-                secure: true,
-                httpOnly: true,
-                maxAge: 3 * 24 * 60 * 60, // expires in 3 days
-                sameSite: "strict",
-            })
+            .cookie("sid", sid, AUTH_COOKIE)
             .status(EServerResponseCodes.CREATED)
             .json({
                 rescode: EServerResponseRescodes.SUCCESS,
@@ -107,23 +110,29 @@ async function login(req: Request, res: Response) {
         const foundUser = await UserModel.findOne({ email: email });
 
         if (!_.isEmpty(foundUser)) {
-            // todo check for password
+            const passwordMatched = await bcrypt.compare(
+                password,
+                foundUser.password,
+            );
 
-            const sid = await setUserSession(foundUser.id);
+            if (passwordMatched) {
+                const sid = await setUserSession(foundUser.id);
 
-            return res
-                .cookie("sid", sid, {
-                    secure: true,
-                    httpOnly: true,
-                    maxAge: 3 * 24 * 60 * 60, // expires in 3 days
-                    sameSite: "strict",
-                })
-                .status(EServerResponseCodes.OK)
-                .json({
-                    rescode: EServerResponseRescodes.SUCCESS,
-                    message: "User logged in",
-                    data: {},
+                return res
+                    .cookie("sid", sid, AUTH_COOKIE)
+                    .status(EServerResponseCodes.OK)
+                    .json({
+                        rescode: EServerResponseRescodes.SUCCESS,
+                        message: "User logged in",
+                        data: {},
+                    });
+            } else {
+                return res.status(EServerResponseCodes.UNAUTHORIZED).json({
+                    rescode: EServerResponseRescodes.ERROR,
+                    message: "The password is incorrect",
+                    error: "Wrong password",
                 });
+            }
         } else {
             return res.status(EServerResponseCodes.NOT_FOUND).json({
                 rescode: EServerResponseRescodes.ERROR,

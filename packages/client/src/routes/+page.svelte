@@ -24,7 +24,7 @@
             await AuthService.login({
                 showAlerts: false,
                 requestData: {
-                    email: "ojaswi@yahoo.com",
+                    email: "ojaswi@gmail.com",
                     password: "Ojaswi825@",
                 },
             });
