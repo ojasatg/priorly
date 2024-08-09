@@ -32,15 +32,10 @@ export type TAllTodosResponseSchema = z.infer<typeof AllTodosResponseSchema>;
 
 // Users and Auth
 export const CreateUserResponseSchema = z.object({});
-export const LoginUserResponseSchema = CreateUserResponseSchema;
 export const EditUserResponseSchema = CreateUserResponseSchema;
-export const DeleteUserResponseSchema = CreateUserResponseSchema;
 
 export type TCreateUserResponseSchema = z.infer<
     typeof CreateUserResponseSchema
 >;
-export type TLoginUserResponseSchema = z.infer<typeof LoginUserResponseSchema>;
+
 export type TEditUserResponseSchema = z.infer<typeof EditUserResponseSchema>;
-export type TDeleteUserResponseSchema = z.infer<
-    typeof DeleteUserResponseSchema
->;

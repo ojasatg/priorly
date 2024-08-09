@@ -11,8 +11,8 @@ How to start - start.sh
 2. Start the client on the build machine
 
 Todos
-1. Change password
-2. Forgot password
+- Change password
+- Forgot password
 
 
 Start server and client separately just like you do in the dev machine.
