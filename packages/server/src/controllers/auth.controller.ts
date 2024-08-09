@@ -64,7 +64,6 @@ async function signup(req: Request, res: Response) {
             .json({
                 rescode: EServerResponseRescodes.SUCCESS,
                 message: "User signup successful",
-                data: {},
             });
     } catch (error) {
         const { code, errors } = getFormattedMongooseErrors(
@@ -124,7 +123,6 @@ async function login(req: Request, res: Response) {
                     .json({
                         rescode: EServerResponseRescodes.SUCCESS,
                         message: "User logged in",
-                        data: {},
                     });
             } else {
                 return res.status(EServerResponseCodes.UNAUTHORIZED).json({
@@ -159,7 +157,6 @@ async function logout(req: Request, res: Response) {
         return res.status(EServerResponseCodes.OK).json({
             rescode: EServerResponseRescodes.SUCCESS,
             message: "Logged out successfully",
-            data: {},
         });
     } catch (error) {
         console.error(error);

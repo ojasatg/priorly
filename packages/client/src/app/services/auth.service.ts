@@ -1,11 +1,8 @@
 import {
     CreateUserRequestSchema,
-    CreateUserResponseSchema,
     LoginUserRequestSchema,
-    LoginUserResponseSchema,
     type TCreateUserRequestSchema,
     type TLoginUserRequestSchema,
-    type TLoginUserResponseSchema,
 } from "shared";
 
 import { useCreateService } from "$lib/hooks/service.hooks";
@@ -24,20 +21,18 @@ function signup({ showAlerts, requestData }: IPostAPIParams<TCreateUserRequestSc
             body: requestData,
         },
         requestSchema: CreateUserRequestSchema,
-        responseSchema: CreateUserResponseSchema,
         showAlerts: showAlerts,
     });
 }
 
 function login({ showAlerts, requestData }: IPostAPIParams<TLoginUserRequestSchema>) {
-    return authService<TLoginUserResponseSchema>({
+    return authService({
         url: APIs.USER_LOGIN,
         options: {
             method: EAPIRequestMethod.POST,
             body: requestData,
         },
         requestSchema: LoginUserRequestSchema,
-        responseSchema: LoginUserResponseSchema,
         showAlerts,
     });
 }

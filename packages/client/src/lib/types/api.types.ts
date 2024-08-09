@@ -12,7 +12,7 @@ export type TAPISuccess<TData = undefined> = {
     data?: TData;
 };
 
-export interface IPostAPIParams<TRequest, TQuery = undefined> {
+export interface IPostAPIParams<TRequest = undefined, TQuery = undefined> {
     requestData: TRequest;
     queryParams?: TQuery;
     showAlerts?: boolean;

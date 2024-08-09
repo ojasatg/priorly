@@ -119,7 +119,6 @@ export async function remove(req: Request, res: Response) {
         return res.status(EServerResponseCodes.OK).json({
             rescode: EServerResponseRescodes.SUCCESS,
             message: "User deleted successfully",
-            data: {},
         });
     } catch (error) {
         console.error(error);

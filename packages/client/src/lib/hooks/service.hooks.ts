@@ -25,8 +25,8 @@ interface ICreateServiceParams {
     url: string;
     options: FetchOptions;
     querySchema?: ZodSchema;
-    requestSchema: ZodSchema;
-    responseSchema: ZodSchema;
+    requestSchema?: ZodSchema;
+    responseSchema?: ZodSchema;
     showAlerts?: boolean;
 }
 
@@ -91,6 +91,10 @@ async function createService<TData>({
     let queryParams = options?.query;
 
     if (!_.isEmpty(requestBody)) {
+        if (_.isEmpty(requestSchema)) {
+            throw new Error(EServiceMessageCodes.REQUEST_WITHOUT_SCHEMA);
+        }
+
         try {
             const requestParse = requestSchema.parse(requestBody);
             requestBody = requestParse; // strips unwanted keys
@@ -140,23 +144,31 @@ async function createService<TData>({
         response.rescode === EServerResponseRescodes.QUEUED
     ) {
         // if api response is success, then merge the response schema with api success schema and try to validate
-        const responseValidationSchema = SuccessResponseSchema.merge(
-            z.object({ data: responseSchema }),
-        );
-        try {
-            // try to validate the repsonse
-            const responseResult = responseValidationSchema.parse(response);
-            if (showAlerts) {
-                alerts.success(response.message);
+        if (!_.isEmpty(responseSchema)) {
+            const responseValidationSchema = SuccessResponseSchema.merge(
+                z.object({ data: responseSchema }),
+            );
+
+            try {
+                // try to validate the repsonse
+                const responseResult = responseValidationSchema.parse(response);
+                if (showAlerts) {
+                    alerts.success(response.message);
+                }
+                return responseResult.data as TData;
+            } catch (error) {
+                // throw error when validation fails
+                console.error(error);
+                if (showAlerts) {
+                    alerts.error(SERVICE_MESSAGES[EServiceMessageCodes.RESPONSE_VALIDATION_FAILED]);
+                }
+                throw new Error(EServiceMessageCodes.RESPONSE_VALIDATION_FAILED);
             }
-            return responseResult.data as TData;
-        } catch (error) {
-            // throw error when validation fails
-            console.error(error);
-            if (showAlerts) {
-                alerts.error(SERVICE_MESSAGES[EServiceMessageCodes.RESPONSE_VALIDATION_FAILED]);
-            }
-            throw new Error(EServiceMessageCodes.RESPONSE_VALIDATION_FAILED);
+        } else if (!_.isEmpty(response.data) && _.isEmpty(responseSchema)) {
+            // if response data is there but schema not provided
+            throw new Error(EServiceMessageCodes.RESPONSE_WITHOUT_SCHEMA);
+        } else {
+            return;
         }
     } else {
         // if api response is error
