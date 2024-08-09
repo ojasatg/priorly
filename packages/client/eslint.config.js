@@ -15,31 +15,31 @@ export default [
         languageOptions: {
             globals: {
                 ...globals.browser,
-                ...globals.node
-            }
-        }
+                ...globals.node,
+            },
+        },
     },
     {
         files: ["**/*.svelte", "**/*.ts", "**/*.js"],
         languageOptions: {
             parserOptions: {
-                parser: ts.parser
-            }
+                parser: ts.parser,
+            },
         },
         rules: {
             "prefer-const": [
                 "error",
                 {
                     destructuring: "any",
-                    ignoreReadBeforeAssign: false
-                }
+                    ignoreReadBeforeAssign: false,
+                },
             ],
             curly: ["error", "all"],
             "no-console": ["error", { allow: ["warn", "error", "info"] }],
-            "@typescript-eslint/no-unsafe-function-type": ["warn"]
-        }
+            "@typescript-eslint/no-unsafe-function-type": ["warn"],
+        },
     },
     {
-        ignores: ["build/", ".svelte-kit/", "dist/"]
-    }
+        ignores: ["build/", ".svelte-kit/", "dist/"],
+    },
 ];

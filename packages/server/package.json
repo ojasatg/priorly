@@ -1,46 +1,46 @@
 {
-  "name": "server",
-  "module": "app.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "bun --hot ./src/app.ts",
-    "build": "rm -rf dist && bun run tsc",
-    "format": "prettier --write .",
-    "lint": "bunx tsc --noEmit && eslint .",
-    "lint:fix": "eslint --fix .",
-    "clean": "rm -rf node_modules"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.8.0",
-    "@types/bcrypt": "^5.0.2",
-    "@types/bun": "latest",
-    "@types/cookie-parser": "^1.4.7",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/lodash": "^4.17.7",
-    "@types/mongoose": "^5.11.97",
-    "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.17.0",
-    "@typescript-eslint/parser": "^7.17.0",
-    "eslint": "9.x",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.3.3",
-    "typescript-eslint": "^7.17.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "lodash": "^4.17.21",
-    "mongoose": "^8.5.1",
-    "shared": "workspace:*",
-    "unstorage": "^1.10.2",
-    "uuid": "^10.0.0",
-    "zod": "^3.23.8"
-  }
+    "name": "server",
+    "module": "app.ts",
+    "type": "module",
+    "scripts": {
+        "dev": "bun --hot ./src/app.ts",
+        "build": "rm -rf dist && bun run tsc",
+        "format": "prettier --write .",
+        "lint": "bunx tsc --noEmit && eslint .",
+        "lint:fix": "eslint --fix .",
+        "clean": "rm -rf node_modules"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.8.0",
+        "@types/bcrypt": "^5.0.2",
+        "@types/bun": "latest",
+        "@types/cookie-parser": "^1.4.7",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "@types/lodash": "^4.17.7",
+        "@types/mongoose": "^5.11.97",
+        "@types/uuid": "^10.0.0",
+        "@typescript-eslint/eslint-plugin": "^7.17.0",
+        "@typescript-eslint/parser": "^7.17.0",
+        "eslint": "9.x",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "prettier": "^3.3.3",
+        "typescript-eslint": "^7.17.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "express": "^4.19.2",
+        "lodash": "^4.17.21",
+        "mongoose": "^8.5.1",
+        "shared": "workspace:*",
+        "unstorage": "^1.10.2",
+        "uuid": "^10.0.0",
+        "zod": "^3.23.8"
+    }
 }
